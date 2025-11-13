@@ -68,24 +68,24 @@ export const Header: React.FC = () => {
               </div>
             </button>
             <button
-              onClick={() => scrollToSection('#prices')}
+              onClick={() => scrollToSection('#portfolio')}
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
-              title="Prices"
+              title="Portfolio"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1355B2] to-[#A88AED] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#A88AED] to-[#1355B2] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.2} yOffset={10}>
-                  <DollarSign className="w-6 h-6 text-white" />
+                  <Images className="w-6 h-6 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
             <button
-              onClick={() => scrollToSection('#process')}
+              onClick={() => scrollToSection('#prices')}
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
-              title="Process"
+              title="Prices"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#A88AED] to-[#FFCBEB] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.25} yOffset={10}>
-                  <ListChecks className="w-6 h-6 text-white" />
+                  <DollarSign className="w-6 h-6 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
