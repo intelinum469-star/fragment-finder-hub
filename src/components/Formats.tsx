@@ -14,7 +14,7 @@ export const Formats: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="formats" className="py-16 relative z-10">
+    <section id="formats" className="py-16 pt-24 relative z-10">
       <div className="container max-w-[1200px] mx-auto px-4">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border-2 border-[#CBD83B] mb-4">
