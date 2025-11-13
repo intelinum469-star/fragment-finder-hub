@@ -25,7 +25,7 @@ const App = () => (
           <PaintSplashes />
           <div className="relative z-10">
             <Header />
-            <main>
+            <main className="pt-24 md:pt-28">
               <Hero />
               <AboutMe />
               <Formats />

@@ -32,7 +32,7 @@ const heroCards = [
     text: 'hero_card3_text',
     image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?w=400',
     rotate: 'hover:rotate-2',
-    textColor: 'text-black',
+    textColor: 'text-white',
   },
   {
     bg: 'linear-gradient(135deg, #EFFEED 0%, #CBD83B 100%)',

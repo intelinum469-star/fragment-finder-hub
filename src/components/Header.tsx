@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
               title="About"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B]/70 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFCBEB] to-[#F5569B]/70 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.1} yOffset={10}>
                   <User className="w-6 h-6 text-white" />
                 </AnimatedIcon>
@@ -61,7 +61,7 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
               title="Formats"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#CBD83B] to-[#EFFEED] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#CBD83B] to-[#EFFEED] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.15} yOffset={10}>
                   <Palette className="w-6 h-6 text-black" />
                 </AnimatedIcon>
@@ -72,7 +72,7 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
               title="Portfolio"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#A88AED] to-[#1355B2] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#A88AED] to-[#1355B2] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.2} yOffset={10}>
                   <Images className="w-6 h-6 text-white" />
                 </AnimatedIcon>
@@ -83,7 +83,7 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
               title="Prices"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.25} yOffset={10}>
                   <DollarSign className="w-6 h-6 text-white" />
                 </AnimatedIcon>
@@ -94,7 +94,7 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
               title="Portfolio"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F5569B] to-[#A88AED] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#F5569B] to-[#A88AED] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.3} yOffset={10}>
                   <Images className="w-6 h-6 text-white" />
                 </AnimatedIcon>
@@ -105,7 +105,7 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center gap-1 transition-all hover:scale-110"
               title="Contacts"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#CBD83B] to-[#F5569B] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#CBD83B] to-[#F5569B] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 <AnimatedIcon delay={0.35} yOffset={10}>
                   <Mail className="w-6 h-6 text-white" />
                 </AnimatedIcon>
