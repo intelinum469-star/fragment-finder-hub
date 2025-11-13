@@ -40,7 +40,7 @@ export const Portfolio: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="portfolio" className="py-16 pt-24 relative z-10">
+    <section id="portfolio" className="py-16 pt-24 scroll-mt-28 relative z-10">
       <div className="container max-w-[1200px] mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-10">
