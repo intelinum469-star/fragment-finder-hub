@@ -1,5 +1,5 @@
 import React from 'react';
-import watercolorBg from '@/assets/watercolor-bg.png';
+import watercolorBg from '@/assets/watercolor-bg-new.jpg';
 
 export const PaintSplashes: React.FC = () => {
   return (
