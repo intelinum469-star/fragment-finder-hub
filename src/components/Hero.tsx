@@ -3,6 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { FormattedText } from './FormattedText';
 import { AnimatedIcon } from './AnimatedIcon';
+import nataliaPhoto from '@/assets/natalia-photo.jpg';
 
 const heroCards = [
   {
@@ -107,13 +108,13 @@ export const Hero: React.FC = () => {
 
           {/* Right - Cards Grid */}
           <div className="grid grid-cols-2 gap-4">
-            {heroCards.map((card, index) => (
+            {heroCards.slice(0, 3).map((card, index) => (
               <div
                 key={index}
-                className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ${card.rotate}`}
+                className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ${card.rotate} ${index === 2 ? 'col-span-2' : ''}`}
                 style={{ background: card.bg }}
               >
-                <div className="aspect-square relative overflow-hidden">
+                <div className={`${index === 2 ? 'aspect-[2/1]' : 'aspect-square'} relative overflow-hidden`}>
                   <img
                     src={card.image}
                     alt={t(card.title)}
@@ -130,6 +131,9 @@ export const Hero: React.FC = () => {
                 </div>
               </div>
             ))}
+            <div className="col-span-2 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <img src={nataliaPhoto} alt="Natalia Egorova" className="w-full h-full object-cover aspect-[2/1]" />
+            </div>
           </div>
         </div>
       </div>
