@@ -17,8 +17,8 @@ export const Prices: React.FC = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map(i => (
-            <div key={i} className="p-6 rounded-3xl shadow-xl bg-white">
-              <h3 className="text-2xl font-black mb-4">{t(`p_card${i}_title`)}</h3>
+            <div key={i} className="p-8 rounded-3xl shadow-2xl bg-white hover:shadow-3xl transition-all duration-300 hover:-translate-y-1">
+              <h3 className="text-2xl font-black mb-4 text-black">{t(`p_card${i}_title`)}</h3>
               <p className="text-3xl font-black text-[#F5569B] mb-4">{t(`p_card${i}_note`)}</p>
             </div>
           ))}
