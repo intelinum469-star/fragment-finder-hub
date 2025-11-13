@@ -32,7 +32,7 @@ export const AboutMe: React.FC = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 items-start">
           {/* Photo on the left */}
           <div className="relative">
             <div className="rounded-3xl overflow-hidden shadow-2xl">
