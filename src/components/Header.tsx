@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Desktop Navigation - Icons */}
-          <nav className="hidden lg:flex items-center gap-4">
+          <nav className="flex items-center gap-4 overflow-x-auto sm:gap-5">
             <button
               onClick={() => scrollToSection('#about')}
               className="group flex flex-col items-center transition-all hover:scale-105"
@@ -117,7 +117,7 @@ export const Header: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-gray-200 text-gray-700 hover:border-gray-400 transition-all hover:scale-105"
+              className="flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#F4F6F8] to-[#E9EEF3] text-gray-700 shadow-md hover:shadow-lg transition-all"
             >
               <Globe className="w-6 h-6" />
             </button>
@@ -144,62 +144,8 @@ export const Header: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-[#F5569B] text-white"
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <nav className="lg:hidden pb-4 grid grid-cols-6 gap-3">
-            <button
-              onClick={() => scrollToSection('#about')}
-              aria-label="About"
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <User className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => scrollToSection('#formats')}
-              aria-label="Formats"
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#CBD83B] to-[#EFFEED] flex items-center justify-center text-black shadow-lg hover:shadow-xl transition-all"
-            >
-              <Palette className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => scrollToSection('#portfolio')}
-              aria-label="Portfolio"
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5569B] to-[#A88AED] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <Images className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => scrollToSection('#prices')}
-              aria-label="Prices"
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <DollarSign className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => scrollToSection('#process')}
-              aria-label="Process"
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1355B2] to-[#A88AED] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <ListChecks className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => scrollToSection('#contacts')}
-              aria-label="Contacts"
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#CBD83B] to-[#F5569B] flex items-center justify-center text-black shadow-lg hover:shadow-xl transition-all"
-            >
-              <Mail className="w-6 h-6" />
-            </button>
-          </nav>
-        )}
       </div>
     </header>
   );
