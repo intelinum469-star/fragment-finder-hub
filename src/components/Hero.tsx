@@ -131,9 +131,6 @@ export const Hero: React.FC = () => {
                 </div>
               </div>
             ))}
-            <div className="col-span-2 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
-              <img src={nataliaPhoto} alt="Natalia Egorova" className="w-full h-full object-cover aspect-[2/1]" />
-            </div>
           </div>
         </div>
       </div>
