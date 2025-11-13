@@ -32,9 +32,9 @@ export const AboutMe: React.FC = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10 items-start lg:justify-items-start">
           {/* Photo on the left */}
-          <div className="relative">
+          <div className="relative w-[260px] justify-self-start">
             <div className="rounded-3xl overflow-hidden shadow-2xl">
               <img 
                 src={nataliaPhoto} 
