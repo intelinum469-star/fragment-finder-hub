@@ -156,48 +156,48 @@ export const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <nav className="lg:hidden pb-4 flex flex-col gap-2">
+          <nav className="lg:hidden pb-4 grid grid-cols-6 gap-3">
             <button
               onClick={() => scrollToSection('#about')}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#FFCBEB] to-[#F5569B] text-white font-bold hover:shadow-lg transition-shadow"
+              aria-label="About"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
             >
-              <User className="w-5 h-5" />
-              About
+              <User className="w-6 h-6" />
             </button>
             <button
               onClick={() => scrollToSection('#formats')}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#CBD83B] to-[#EFFEED] text-black font-bold hover:shadow-lg transition-shadow"
+              aria-label="Formats"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#CBD83B] to-[#EFFEED] flex items-center justify-center text-black shadow-lg hover:shadow-xl transition-all"
             >
-              <Palette className="w-5 h-5" />
-              Formats
-            </button>
-            <button
-              onClick={() => scrollToSection('#prices')}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#1355B2] to-[#A88AED] text-white font-bold hover:shadow-lg transition-shadow"
-            >
-              <DollarSign className="w-5 h-5" />
-              Prices
-            </button>
-            <button
-              onClick={() => scrollToSection('#process')}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#A88AED] to-[#FFCBEB] text-black font-bold hover:shadow-lg transition-shadow"
-            >
-              <ListChecks className="w-5 h-5" />
-              Process
+              <Palette className="w-6 h-6" />
             </button>
             <button
               onClick={() => scrollToSection('#portfolio')}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#F5569B] to-[#A88AED] text-white font-bold hover:shadow-lg transition-shadow"
+              aria-label="Portfolio"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5569B] to-[#A88AED] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
             >
-              <Images className="w-5 h-5" />
-              Portfolio
+              <Images className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => scrollToSection('#prices')}
+              aria-label="Prices"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
+            >
+              <DollarSign className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => scrollToSection('#process')}
+              aria-label="Process"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1355B2] to-[#A88AED] flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all"
+            >
+              <ListChecks className="w-6 h-6" />
             </button>
             <button
               onClick={() => scrollToSection('#contacts')}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#CBD83B] to-[#F5569B] text-black font-bold hover:shadow-lg transition-shadow"
+              aria-label="Contacts"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#CBD83B] to-[#F5569B] flex items-center justify-center text-black shadow-lg hover:shadow-xl transition-all"
             >
-              <Mail className="w-5 h-5" />
-              Contacts
+              <Mail className="w-6 h-6" />
             </button>
           </nav>
         )}
