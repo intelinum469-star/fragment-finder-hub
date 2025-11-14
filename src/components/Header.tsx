@@ -15,9 +15,9 @@ export const Header: React.FC = () => {
   };
 
   const langNames = {
-    ru: 'RU',
-    it: 'IT',
     en: 'EN',
+    it: 'IT',
+    ru: 'RU',
   };
 
   return (
