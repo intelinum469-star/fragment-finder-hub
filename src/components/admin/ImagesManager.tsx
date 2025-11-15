@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -6,9 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus, Upload, Loader2, X, ChevronLeft } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Loader2, X, ChevronLeft, Star } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Category {
   id: string;
@@ -33,6 +32,9 @@ export const ImagesManager = () => {
   const [editingImage, setEditingImage] = useState<PortfolioImage | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [bulkUploading, setBulkUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
+  const bulkInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -118,6 +120,23 @@ export const ImagesManager = () => {
     },
   });
 
+  const setMainImageMutation = useMutation({
+    mutationFn: async ({ categoryId, imageUrl }: { categoryId: string; imageUrl: string }) => {
+      const { error } = await supabase
+        .from('portfolio_categories')
+        .update({ main_image_url: imageUrl })
+        .eq('id', categoryId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+      toast({ title: 'Главное изображение установлено!' });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Ошибка', description: error.message, variant: 'destructive' });
+    },
+  });
+
   const handleImageUpload = async (file: File) => {
     setUploading(true);
     try {
@@ -145,6 +164,64 @@ export const ImagesManager = () => {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleBulkUpload = async (files: FileList) => {
+    setBulkUploading(true);
+    setUploadProgress({ current: 0, total: files.length });
+
+    const results = { success: 0, failed: 0 };
+    
+    const maxOrderIndex = images?.reduce((max, img) => Math.max(max, img.order_index), 0) || 0;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      setUploadProgress({ current: i + 1, total: files.length });
+
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('portfolio-images')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('portfolio-images')
+          .getPublicUrl(filePath);
+
+        const { error: insertError } = await supabase
+          .from('portfolio_images')
+          .insert({
+            category_id: selectedCategoryId!,
+            image_url: publicUrl,
+            title_ru: null,
+            title_en: null,
+            description_ru: null,
+            description_en: null,
+            order_index: maxOrderIndex + i + 1,
+          });
+
+        if (insertError) throw insertError;
+
+        results.success++;
+      } catch (error) {
+        console.error(`Failed to upload ${file.name}:`, error);
+        results.failed++;
+      }
+    }
+
+    setBulkUploading(false);
+    setUploadProgress({ current: 0, total: 0 });
+    queryClient.invalidateQueries({ queryKey: ['admin-images'] });
+
+    toast({
+      title: 'Массовая загрузка завершена',
+      description: `Успешно: ${results.success}, Ошибок: ${results.failed}`,
+    });
   };
 
   const openDialog = (image?: PortfolioImage) => {
@@ -241,6 +318,36 @@ export const ImagesManager = () => {
           <h2 className="text-2xl font-bold">{selectedCategory?.name_ru}</h2>
           <p className="text-gray-600">{selectedCategory?.name_en}</p>
         </div>
+        <input
+          ref={bulkInputRef}
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              handleBulkUpload(e.target.files);
+            }
+          }}
+          disabled={bulkUploading}
+        />
+        <Button
+          onClick={() => bulkInputRef.current?.click()}
+          variant="outline"
+          disabled={bulkUploading}
+        >
+          {bulkUploading ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              {uploadProgress.current} / {uploadProgress.total}
+            </>
+          ) : (
+            <>
+              <Upload className="w-4 h-4 mr-2" />
+              Загрузить несколько
+            </>
+          )}
+        </Button>
         <Button
           onClick={() => openDialog()}
           className="bg-gradient-to-r from-[#F5569B] to-[#A88AED] hover:opacity-90"
@@ -261,12 +368,18 @@ export const ImagesManager = () => {
               key={image.id}
               className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
             >
-              <div className="aspect-video bg-gray-100">
+              <div className="aspect-video bg-gray-100 relative">
                 <img
                   src={image.image_url}
                   alt={image.title_ru || ''}
                   className="w-full h-full object-cover"
                 />
+                {selectedCategory?.main_image_url === image.image_url && (
+                  <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold">
+                    <Star className="w-3 h-3 fill-white" />
+                    Главное
+                  </div>
+                )}
               </div>
               
               <div className="p-4 space-y-2">
@@ -277,13 +390,24 @@ export const ImagesManager = () => {
                 
                 <div className="flex gap-2 pt-2">
                   <Button
+                    onClick={() => setMainImageMutation.mutate({
+                      categoryId: selectedCategoryId!,
+                      imageUrl: image.image_url,
+                    })}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                    disabled={selectedCategory?.main_image_url === image.image_url}
+                  >
+                    <Star className="w-4 h-4 mr-1" />
+                    Главное
+                  </Button>
+                  <Button
                     onClick={() => openDialog(image)}
                     variant="outline"
                     size="sm"
-                    className="flex-1"
                   >
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Изменить
+                    <Pencil className="w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => {
@@ -388,7 +512,7 @@ export const ImagesManager = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>Порядок сортировки</Label>
+              <Label>Порядок отображения</Label>
               <Input
                 type="number"
                 value={editingImage?.order_index || 0}
@@ -396,12 +520,23 @@ export const ImagesManager = () => {
               />
             </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button type="submit" className="flex-1 bg-gradient-to-r from-[#F5569B] to-[#A88AED]">
-                {editingImage?.id ? 'Сохранить' : 'Создать'}
-              </Button>
+            <div className="flex justify-end gap-2 pt-4">
               <Button type="button" variant="outline" onClick={closeDialog}>
                 Отмена
+              </Button>
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-[#F5569B] to-[#A88AED] hover:opacity-90"
+                disabled={createMutation.isPending || updateMutation.isPending}
+              >
+                {createMutation.isPending || updateMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Сохранение...
+                  </>
+                ) : (
+                  'Сохранить'
+                )}
               </Button>
             </div>
           </form>
