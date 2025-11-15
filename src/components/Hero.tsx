@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { FormattedText } from './FormattedText';
 import { AnimatedIcon } from './AnimatedIcon';
+import { ImageGalleryModal } from './ImageGalleryModal';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import nataliaPhoto from '@/assets/natalia-photo.jpg';
 
 const heroCards = [
@@ -15,6 +18,7 @@ const heroCards = [
     image: 'https://images.unsplash.com/photo-1701958213864-2307a737e853?w=400',
     rotate: 'hover:rotate-3',
     textColor: 'text-white',
+    categorySlug: 'portraits', // связь с категорией портфолио
   },
   {
     bg: 'linear-gradient(135deg, #CBD83B 0%, #EFFEED 100%)',
@@ -24,6 +28,7 @@ const heroCards = [
     image: 'https://images.unsplash.com/photo-1743080331451-6560592e5ef6?w=400',
     rotate: 'hover:-rotate-2',
     textColor: 'text-black',
+    categorySlug: 'children',
   },
   {
     bg: 'linear-gradient(135deg, #1355B2 0%, #A88AED 100%)',
@@ -33,6 +38,7 @@ const heroCards = [
     image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?w=400',
     rotate: 'hover:rotate-2',
     textColor: 'text-white',
+    categorySlug: 'family',
   },
   {
     bg: 'linear-gradient(135deg, #EFFEED 0%, #CBD83B 100%)',
@@ -42,11 +48,62 @@ const heroCards = [
     image: 'https://images.unsplash.com/photo-1750330079974-223fc6114e90?w=400',
     rotate: 'hover:-rotate-3',
     textColor: 'text-black',
+    categorySlug: 'events',
   },
 ];
 
 export const Hero: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [selectedCategory, setSelectedCategory] = useState<{ slug: string; name: string } | null>(null);
+  const [galleryImages, setGalleryImages] = useState<any[]>([]);
+
+  // Загрузка категорий портфолио
+  const { data: categories } = useQuery({
+    queryKey: ['portfolio-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('portfolio_categories')
+        .select('*')
+        .order('order_index', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Загрузка изображений для выбранной категории
+  const { data: images } = useQuery({
+    queryKey: ['portfolio-images', selectedCategory?.slug],
+    queryFn: async () => {
+      if (!selectedCategory) return [];
+      
+      const category = categories?.find(c => c.slug === selectedCategory.slug);
+      if (!category) return [];
+
+      const { data, error } = await supabase
+        .from('portfolio_images')
+        .select('*')
+        .eq('category_id', category.id)
+        .order('order_index', { ascending: true });
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!selectedCategory && !!categories,
+  });
+
+  const handleCardClick = (categorySlug: string, cardTitle: string) => {
+    const category = categories?.find(c => c.slug === categorySlug);
+    if (category) {
+      const categoryName = language === 'ru' ? category.name_ru : category.name_en;
+      setSelectedCategory({ slug: categorySlug, name: categoryName });
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCategory(null);
+    setGalleryImages([]);
+  };
 
   return (
     <section className="pt-10 sm:pt-12 md:pt-14 pb-12 sm:pb-16 relative z-10">
@@ -111,7 +168,8 @@ export const Hero: React.FC = () => {
             {heroCards.slice(0, 3).map((card, index) => (
               <div
                 key={index}
-                className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ${card.rotate} ${index === 2 ? 'col-span-2' : ''}`}
+                onClick={() => handleCardClick(card.categorySlug, t(card.title))}
+                className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 cursor-pointer hover:scale-105 ${card.rotate} ${index === 2 ? 'col-span-2' : ''}`}
                 style={{ background: card.bg }}
               >
                 <div className={`${index === 2 ? 'aspect-[2/1]' : 'aspect-square'} relative overflow-hidden`}>
@@ -133,6 +191,16 @@ export const Hero: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Image Gallery Modal */}
+        {selectedCategory && images && (
+          <ImageGalleryModal
+            isOpen={!!selectedCategory}
+            onClose={handleCloseModal}
+            images={images}
+            categoryName={selectedCategory.name}
+          />
+        )}
       </div>
     </section>
   );
