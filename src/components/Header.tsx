@@ -1,13 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Palette, Home, Images, DollarSign, ListChecks, Mail, Globe, Menu, X, User } from 'lucide-react';
+import { Palette, Home, Images, DollarSign, ListChecks, Mail, Globe, Menu, X, User, Settings } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
 import logoImage from '../assets/ne-logo.png';
+import { supabase } from '@/integrations/supabase/client';
 
 export const Header: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        setIsAdmin(!!data);
+      }
+    };
+
+    checkAdminStatus();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkAdminStatus();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.querySelector(id);
@@ -110,8 +137,18 @@ export const Header: React.FC = () => {
             </button>
           </nav>
 
-          {/* Mobile & Desktop Language + Menu */}
+          {/* Mobile & Desktop Language + Admin + Menu */}
           <div className="flex items-center gap-2">
+            {/* Admin Button */}
+            {isAdmin && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#4A8BD9] to-[#1355B2] text-white shadow-md hover:shadow-lg transition-all"
+                title="Админка"
+              >
+                <Settings className="w-6 h-6" />
+              </button>
+            )}
             {/* Language Switcher */}
             <div className="relative">
               <button

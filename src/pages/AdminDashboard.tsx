@@ -3,8 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Home } from 'lucide-react';
 import { Session } from '@supabase/supabase-js';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CategoriesManager } from '@/components/admin/CategoriesManager';
+import { ImagesManager } from '@/components/admin/ImagesManager';
+import { SectionsManager } from '@/components/admin/SectionsManager';
 
 const AdminDashboard = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -104,39 +108,45 @@ const AdminDashboard = () => {
       <div className="container max-w-[1400px] mx-auto px-6 py-8">
         <div className="bg-white rounded-3xl shadow-xl p-8 border-4 border-[#F5569B]">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-black text-black">Admin Dashboard</h1>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="border-2 border-[#F5569B] text-[#F5569B] hover:bg-[#FFCBEB]"
-            >
-              Logout
-            </Button>
+            <h1 className="text-3xl font-black text-black">Панель Администратора</h1>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => navigate('/')}
+                variant="outline"
+                className="border-2 border-gray-300 hover:bg-gray-100"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                На сайт
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="border-2 border-[#F5569B] text-[#F5569B] hover:bg-[#FFCBEB]"
+              >
+                Выйти
+              </Button>
+            </div>
           </div>
           
-          <div className="space-y-6">
-            <div className="p-6 bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] rounded-2xl text-white">
-              <h2 className="text-xl font-bold mb-2">Welcome, Admin!</h2>
-              <p>You have full access to manage the portfolio content.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-6 border-2 border-gray-200 rounded-2xl">
-                <h3 className="font-bold text-lg mb-2">Portfolio Categories</h3>
-                <p className="text-gray-600">Manage portfolio categories</p>
-              </div>
-              
-              <div className="p-6 border-2 border-gray-200 rounded-2xl">
-                <h3 className="font-bold text-lg mb-2">Portfolio Images</h3>
-                <p className="text-gray-600">Manage portfolio images</p>
-              </div>
-              
-              <div className="p-6 border-2 border-gray-200 rounded-2xl">
-                <h3 className="font-bold text-lg mb-2">Sections</h3>
-                <p className="text-gray-600">Manage content sections</p>
-              </div>
-            </div>
-          </div>
+          <Tabs defaultValue="categories" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="categories">Категории</TabsTrigger>
+              <TabsTrigger value="images">Изображения</TabsTrigger>
+              <TabsTrigger value="sections">Секции</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="categories">
+              <CategoriesManager />
+            </TabsContent>
+            
+            <TabsContent value="images">
+              <ImagesManager />
+            </TabsContent>
+            
+            <TabsContent value="sections">
+              <SectionsManager />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
