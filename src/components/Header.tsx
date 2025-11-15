@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Palette, Home, Images, DollarSign, ListChecks, Mail, Globe, Menu, X, User } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
+import logoImage from '../assets/ne-logo.png';
 
 export const Header: React.FC = () => {
   const { language, setLanguage } = useLanguage();
@@ -32,8 +33,15 @@ export const Header: React.FC = () => {
                 background: 'linear-gradient(135deg, #F5569B 0%, #A88AED 50%, #CBD83B 100%)',
               }}
             >
-              <span className="text-white text-2xl font-black relative z-10">NE</span>
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+              <img 
+                src={logoImage} 
+                alt="NE Logo" 
+                className="w-full h-full object-cover relative z-10"
+                style={{
+                  mixBlendMode: 'screen',
+                  filter: 'brightness(1.2)',
+                }}
+              />
             </div>
             <div className="hidden md:block">
               <div className="font-black text-xl text-black">
@@ -44,7 +52,7 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Desktop Navigation - Icons */}
-          <nav className="flex items-center gap-4 overflow-x-auto sm:gap-5">
+          <nav className="hidden md:flex items-center gap-4 overflow-x-auto sm:gap-5">
             <button
               onClick={() => scrollToSection('#about')}
               className="group flex flex-col items-center transition-all hover:scale-105"
@@ -113,38 +121,99 @@ export const Header: React.FC = () => {
             </button>
           </nav>
 
-          {/* Language Switcher */}
-          <div className="relative">
+          {/* Mobile & Desktop Language + Menu */}
+          <div className="flex items-center gap-2">
+            {/* Language Switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                className="flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#F4F6F8] to-[#E9EEF3] text-gray-700 shadow-md hover:shadow-lg transition-all"
+              >
+                <Globe className="w-6 h-6" />
+              </button>
+              
+              {isLangOpen && (
+                <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-2xl overflow-hidden border-2 border-[#F5569B] z-50">
+                  {Object.entries(langNames).map(([lang, name]) => (
+                    <button
+                      key={lang}
+                      onClick={() => {
+                        setLanguage(lang as 'ru' | 'it' | 'en');
+                        setIsLangOpen(false);
+                      }}
+                      className={`block w-full px-6 py-3 text-left font-bold transition-colors ${
+                        language === lang
+                          ? 'bg-[#F5569B] text-white'
+                          : 'hover:bg-[#FFCBEB] text-black'
+                      }`}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#F4F6F8] to-[#E9EEF3] text-gray-700 shadow-md hover:shadow-lg transition-all"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#F5569B] to-[#A88AED] text-white shadow-md hover:shadow-lg transition-all"
             >
-              <Globe className="w-6 h-6" />
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            
-            {isLangOpen && (
-              <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-2xl overflow-hidden border-2 border-[#F5569B]">
-                {Object.entries(langNames).map(([lang, name]) => (
-                  <button
-                    key={lang}
-                    onClick={() => {
-                      setLanguage(lang as 'ru' | 'it' | 'en');
-                      setIsLangOpen(false);
-                    }}
-                    className={`block w-full px-6 py-3 text-left font-bold transition-colors ${
-                      language === lang
-                        ? 'bg-[#F5569B] text-white'
-                        : 'hover:bg-[#FFCBEB] text-black'
-                    }`}
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gray-200">
+            <nav className="flex flex-col gap-2">
+              <button
+                onClick={() => scrollToSection('#about')}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#FFCBEB] transition-colors"
+              >
+                <User className="w-5 h-5 text-[#F5569B]" />
+                <span className="font-bold text-black">About</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('#formats')}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#FFCBEB] transition-colors"
+              >
+                <Palette className="w-5 h-5 text-[#CBD83B]" />
+                <span className="font-bold text-black">Formats</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('#portfolio')}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#FFCBEB] transition-colors"
+              >
+                <Images className="w-5 h-5 text-[#A88AED]" />
+                <span className="font-bold text-black">Portfolio</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('#prices')}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#FFCBEB] transition-colors"
+              >
+                <DollarSign className="w-5 h-5 text-[#F5569B]" />
+                <span className="font-bold text-black">Prices</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('#process')}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#FFCBEB] transition-colors"
+              >
+                <ListChecks className="w-5 h-5 text-[#1355B2]" />
+                <span className="font-bold text-black">Process</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('#contacts')}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#FFCBEB] transition-colors"
+              >
+                <Mail className="w-5 h-5 text-[#F5569B]" />
+                <span className="font-bold text-black">Contacts</span>
+              </button>
+            </nav>
+          </div>
+        )}
 
       </div>
     </header>
