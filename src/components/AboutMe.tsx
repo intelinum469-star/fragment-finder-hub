@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Heart, Palette, Award, Users } from 'lucide-react';
+import { Heart, Palette, Award } from 'lucide-react';
 import { FormattedText } from './FormattedText';
 import { AnimatedIcon } from './AnimatedIcon';
 import nataliaPhoto from '@/assets/natalia-photo.jpg';
@@ -8,7 +8,6 @@ import nataliaPhoto from '@/assets/natalia-photo.jpg';
 const statsCards = [
   { icon: Award, value: '30+', label: 'about_stat1', color: '#F5569B' },
   { icon: Palette, value: '100+', label: 'about_stat2', color: '#CBD83B' },
-  { icon: Users, value: '23', label: 'about_stat3', color: '#A88AED' },
   { icon: Heart, value: '100%', label: 'about_stat4', color: '#1355B2' },
 ];
 
@@ -57,7 +56,7 @@ export const AboutMe: React.FC = () => {
               <p className="text-lg text-black leading-relaxed"><FormattedText text={t('about_p3')} /></p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-8">
+            <div className="grid grid-cols-3 gap-4 mt-8">
               {statsCards.map((stat, index) => (
                 <div key={index} className="p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
                   <AnimatedIcon delay={index * 0.1}>
