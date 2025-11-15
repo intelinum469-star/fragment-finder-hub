@@ -1,40 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Palette, Home, Images, DollarSign, ListChecks, Mail, Globe, Menu, X, User, Settings } from 'lucide-react';
+import { useEditMode } from '../contexts/EditModeContext';
+import { Palette, Home, Images, DollarSign, ListChecks, Mail, Globe, Menu, X, User, Settings, Edit3 } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
 import logoImage from '../assets/ne-logo.png';
 import { supabase } from '@/integrations/supabase/client';
 
 export const Header: React.FC = () => {
   const { language, setLanguage } = useLanguage();
+  const { isEditMode, isAdmin, toggleEditMode } = useEditMode();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const { data } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .eq('role', 'admin')
-          .maybeSingle();
-        setIsAdmin(!!data);
-      }
-    };
-
-    checkAdminStatus();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      checkAdminStatus();
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.querySelector(id);
@@ -139,11 +118,25 @@ export const Header: React.FC = () => {
 
           {/* Mobile & Desktop Language + Admin + Menu */}
           <div className="flex items-center gap-2">
-            {/* Admin Button */}
+            {/* Edit Mode Toggle */}
             {isAdmin && (
               <button
+                onClick={toggleEditMode}
+                className={`flex items-center justify-center w-14 h-14 rounded-3xl shadow-md hover:shadow-lg transition-all ${
+                  isEditMode 
+                    ? 'bg-gradient-to-br from-green-400 to-green-600 text-white' 
+                    : 'bg-gradient-to-br from-[#4A8BD9] to-[#1355B2] text-white'
+                }`}
+                title={isEditMode ? 'Выключить редактирование' : 'Включить редактирование'}
+              >
+                <Edit3 className="w-6 h-6" />
+              </button>
+            )}
+            {/* Admin Dashboard Button */}
+            {isAdmin && !isEditMode && (
+              <button
                 onClick={() => navigate('/admin')}
-                className="flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#4A8BD9] to-[#1355B2] text-white shadow-md hover:shadow-lg transition-all"
+                className="flex items-center justify-center w-14 h-14 rounded-3xl bg-gradient-to-br from-[#A88AED] to-[#8B5ED9] text-white shadow-md hover:shadow-lg transition-all"
                 title="Админка"
               >
                 <Settings className="w-6 h-6" />
