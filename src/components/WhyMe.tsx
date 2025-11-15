@@ -17,8 +17,8 @@ export const WhyMe: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-12 relative z-10">
-      <div className="container max-w-[1200px] mx-auto px-4">
+    <section className="py-8 sm:py-12 relative z-10">
+      <div className="container max-w-[1200px] mx-auto px-3 sm:px-4">
         {/* Section Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border-2 border-[#A88AED] mb-4">
@@ -29,23 +29,23 @@ export const WhyMe: React.FC = () => {
               {t('why_label')}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-[#A88AED] via-[#F5569B] to-[#CBD83B] bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-[#A88AED] via-[#F5569B] to-[#CBD83B] bg-clip-text text-transparent">
             {t('why_title')}
           </h2>
-          <p className="text-lg text-black max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-black max-w-2xl mx-auto">
             {t('why_subtitle')}
           </p>
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {whyCards.map((card, index) => (
             <div
               key={index}
               className="relative rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group"
               style={{ background: card.gradient }}
             >
-              <div className={`p-5 ${card.textColor}`}>
+              <div className={`p-4 sm:p-5 ${card.textColor}`}>
                 {/* Star icon */}
                 <div className="mb-3">
                   <AnimatedIcon delay={index * 0.1} yOffset={15}>
@@ -56,8 +56,8 @@ export const WhyMe: React.FC = () => {
                 </div>
                 
                 {/* Text */}
-                <h3 className="text-xl font-black mb-2">{t(card.title)}</h3>
-                <p className="text-sm opacity-90 leading-relaxed">{t(card.text)}</p>
+                <h3 className="text-lg sm:text-xl font-black mb-2">{t(card.title)}</h3>
+                <p className="text-xs sm:text-sm opacity-90 leading-relaxed">{t(card.text)}</p>
               </div>
             </div>
           ))}

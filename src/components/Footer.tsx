@@ -7,10 +7,10 @@ export const Footer: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="relative py-12 mt-20 border-t-4 border-[#F5569B]">
-      <div className="container max-w-[1200px] mx-auto px-4">
+    <footer className="relative py-8 sm:py-12 mt-12 sm:mt-20 border-t-4 border-[#F5569B]">
+      <div className="container max-w-[1200px] mx-auto px-3 sm:px-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           {/* Logo & Description */}
           <div>
             <div 
@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
             >
               <span className="text-white text-3xl font-black relative z-10">NE</span>
             </div>
-            <h3 className="font-black text-xl text-black mb-2">
+            <h3 className="font-black text-lg sm:text-xl text-black mb-2">
               Natalia Egorova
             </h3>
             <p className="text-sm text-black">
@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
 
           {/* Social Media */}
           <div className="flex flex-col items-start md:items-center justify-center">
-            <h4 className="font-bold text-lg mb-4 flex items-center gap-2 text-black">
+            <h4 className="font-bold text-base sm:text-lg mb-4 flex items-center gap-2 text-black">
               <AnimatedIcon delay={0.1}>
                 <Heart className="w-5 h-5 text-[#F5569B] fill-[#F5569B]" />
               </AnimatedIcon>
@@ -73,7 +73,7 @@ export const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div className="flex flex-col items-start md:items-end">
-            <h4 className="font-bold text-lg mb-4 text-black">Contact</h4>
+            <h4 className="font-bold text-base sm:text-lg mb-4 text-black">Contact</h4>
             <div className="text-sm text-black text-left md:text-right">
               <p className="mb-2 font-medium">online · USA / Italy</p>
               <p>RU / IT / EN</p>

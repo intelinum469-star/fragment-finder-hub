@@ -15,8 +15,8 @@ export const AboutMe: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="about" className="py-16 pt-24 scroll-mt-28 relative z-10">
-      <div className="container max-w-[1200px] mx-auto px-4">
+    <section id="about" className="py-12 sm:py-16 pt-20 sm:pt-24 scroll-mt-28 relative z-10">
+      <div className="container max-w-[1200px] mx-auto px-3 sm:px-4">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border-2 border-[#F5569B] mb-4">
             <AnimatedIcon delay={0.1}>
@@ -26,7 +26,7 @@ export const AboutMe: React.FC = () => {
               {t('about_label')}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-[#A88AED] via-[#1355B2] to-[#1355B2] bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-[#A88AED] via-[#1355B2] to-[#1355B2] bg-clip-text text-transparent">
             {t('about_title')}
           </h2>
         </div>
@@ -45,25 +45,25 @@ export const AboutMe: React.FC = () => {
 
           {/* Content on the right */}
           <div className="space-y-6">
-            <h3 className="text-3xl font-black bg-gradient-to-r from-[#F5569B] to-[#A88AED] bg-clip-text text-transparent">
+            <h3 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-[#F5569B] to-[#A88AED] bg-clip-text text-transparent">
               {t('about_name')}
             </h3>
-            <p className="text-xl font-bold text-black">{t('about_subtitle')}</p>
+            <p className="text-lg sm:text-xl font-bold text-black">{t('about_subtitle')}</p>
             
             <div className="space-y-4">
-              <p className="text-lg text-black leading-relaxed"><FormattedText text={t('about_p1')} /></p>
-              <p className="text-lg text-black leading-relaxed"><FormattedText text={t('about_p2')} /></p>
-              <p className="text-lg text-black leading-relaxed"><FormattedText text={t('about_p3')} /></p>
+              <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p1')} /></p>
+              <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p2')} /></p>
+              <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p3')} /></p>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
               {statsCards.map((stat, index) => (
-                <div key={index} className="p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
+                <div key={index} className="p-4 sm:p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
                   <AnimatedIcon delay={index * 0.1}>
                     <stat.icon className="w-10 h-10 mb-3" style={{ color: stat.color }} />
                   </AnimatedIcon>
-                  <div className="text-4xl font-black mb-2" style={{ color: stat.color }}>{stat.value}</div>
-                  <div className="text-sm text-black font-medium">{t(stat.label)}</div>
+                   <div className="text-3xl sm:text-4xl font-black mb-2" style={{ color: stat.color }}>{stat.value}</div>
+                   <div className="text-xs sm:text-sm text-black font-medium">{t(stat.label)}</div>
                 </div>
               ))}
             </div>

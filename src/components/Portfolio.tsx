@@ -40,8 +40,8 @@ export const Portfolio: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="portfolio" className="py-16 pt-24 scroll-mt-28 relative z-10">
-      <div className="container max-w-[1200px] mx-auto px-4">
+    <section id="portfolio" className="py-12 sm:py-16 pt-20 sm:pt-24 scroll-mt-28 relative z-10">
+      <div className="container max-w-[1200px] mx-auto px-3 sm:px-4">
         {/* Section Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border-2 border-[#A88AED] mb-4">
@@ -52,16 +52,16 @@ export const Portfolio: React.FC = () => {
               {t('port_label')}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-[#A88AED] via-[#F5569B] to-[#CBD83B] bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-[#A88AED] via-[#F5569B] to-[#CBD83B] bg-clip-text text-transparent">
             {t('port_title')}
           </h2>
-          <p className="text-lg text-black max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-black max-w-2xl mx-auto">
             {t('port_subtitle')}
           </p>
         </div>
 
         {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {portfolioItems.map((item, index) => (
             <div
               key={index}
@@ -78,8 +78,8 @@ export const Portfolio: React.FC = () => {
                   style={{ background: item.gradient }}
                 />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                <p className="text-white font-bold text-lg">{t(item.caption)}</p>
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-white font-bold text-base sm:text-lg">{t(item.caption)}</p>
               </div>
             </div>
           ))}
@@ -89,7 +89,7 @@ export const Portfolio: React.FC = () => {
         <div className="text-center">
           <button
             onClick={() => document.querySelector('#contacts')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#A88AED] to-[#F5569B] text-white font-bold text-lg shadow-2xl hover:shadow-3xl transition-all hover:scale-105 inline-flex items-center gap-2"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-2xl bg-gradient-to-r from-[#A88AED] to-[#F5569B] text-white font-bold text-base sm:text-lg shadow-2xl hover:shadow-3xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2"
           >
             {t('hero_cta1')}
             <ArrowRight className="w-5 h-5" />

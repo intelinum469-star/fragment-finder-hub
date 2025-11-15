@@ -49,11 +49,11 @@ export const Hero: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="pt-32 pb-16 relative z-10">
-      <div className="container max-w-[1200px] mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 items-center">
+    <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 relative z-10">
+      <div className="container max-w-[1200px] mx-auto px-3 sm:px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12 items-center">
           {/* Left Content */}
-          <div className="space-y-6 -mt-32">
+          <div className="space-y-6 lg:-mt-32">
             {/* Pill */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-sm shadow-xl border-2 border-[#F5569B]">
               <AnimatedIcon delay={0.1}>
@@ -66,33 +66,33 @@ export const Hero: React.FC = () => {
 
             {/* Title */}
             <div>
-              <h1 className="text-5xl md:text-7xl font-black mb-2 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black mb-2 leading-tight">
                 <span className="bg-gradient-to-r from-[#F5569B] to-[#A88AED] bg-clip-text text-transparent">
                   {t('hero_title_1')}
                 </span>
               </h1>
-              <h2 className="text-4xl md:text-6xl font-black text-black leading-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-black leading-tight">
                 {t('hero_title_2')}
               </h2>
             </div>
 
             {/* Subtitle */}
-            <p className="text-lg md:text-xl text-black leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-black leading-relaxed">
               <FormattedText text={t('hero_subtitle')} />
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4">
               <button
                 onClick={() => document.querySelector('#contacts')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#F5569B] to-[#A88AED] text-white font-bold text-lg shadow-2xl hover:shadow-3xl transition-all hover:scale-105 flex items-center gap-2"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-2xl bg-gradient-to-r from-[#F5569B] to-[#A88AED] text-white font-bold text-base sm:text-lg shadow-2xl hover:shadow-3xl transition-all hover:scale-105 flex items-center justify-center gap-2"
               >
                 {t('hero_cta1')}
                 <ArrowRight className="w-5 h-5" />
               </button>
               <button
                 onClick={() => document.querySelector('#portfolio')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 rounded-2xl bg-white border-2 border-[#F5569B] text-[#F5569B] font-bold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-2xl bg-white border-2 border-[#F5569B] text-[#F5569B] font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105"
               >
                 {t('hero_cta2')}
               </button>
@@ -107,7 +107,7 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* Right - Cards Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {heroCards.slice(0, 3).map((card, index) => (
               <div
                 key={index}
@@ -122,12 +122,12 @@ export const Hero: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
-                <div className={`p-4 ${card.textColor}`}>
-                  <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-1">
+                <div className={`p-3 sm:p-4 ${card.textColor}`}>
+                  <div className="text-xs sm:text-sm font-bold uppercase tracking-wider opacity-80 mb-1">
                     {t(card.tag)}
                   </div>
-                  <div className="text-lg font-black mb-1">{t(card.title)}</div>
-                  <div className="text-sm opacity-90">{t(card.text)}</div>
+                  <div className="text-base sm:text-lg font-black mb-1">{t(card.title)}</div>
+                  <div className="text-xs sm:text-sm opacity-90">{t(card.text)}</div>
                 </div>
               </div>
             ))}
