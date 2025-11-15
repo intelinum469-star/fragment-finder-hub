@@ -7,6 +7,9 @@ import { ImageGalleryModal } from './ImageGalleryModal';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import nataliaPhoto from '@/assets/natalia-photo.jpg';
+import portraitPainting from '@/assets/portrait-painting.jpg';
+import fashionDress from '@/assets/fashion-dress.jpg';
+import interiorMural from '@/assets/interior-mural.jpg';
 
 const heroCards = [
   {
@@ -15,7 +18,7 @@ const heroCards = [
     title: 'hero_card1_title',
     text: 'hero_card1_text',
     offer: 'hero_card1_offer',
-    image: 'https://images.unsplash.com/photo-1701958213864-2307a737e853?w=400',
+    image: portraitPainting,
     rotate: 'hover:rotate-3',
     textColor: 'text-white',
     categorySlug: 'portraits', // связь с категорией портфолио
@@ -25,7 +28,7 @@ const heroCards = [
     tag: 'hero_card2_tag',
     title: 'hero_card2_title',
     text: 'hero_card2_text',
-    image: 'https://images.unsplash.com/photo-1743080331451-6560592e5ef6?w=400',
+    image: fashionDress,
     rotate: 'hover:-rotate-2',
     textColor: 'text-black',
     categorySlug: 'children',
@@ -35,7 +38,7 @@ const heroCards = [
     tag: 'hero_card3_tag',
     title: 'hero_card3_title',
     text: 'hero_card3_text',
-    image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?w=400',
+    image: interiorMural,
     rotate: 'hover:rotate-2',
     textColor: 'text-white',
     categorySlug: 'family',
