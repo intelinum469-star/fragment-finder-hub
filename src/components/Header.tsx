@@ -27,22 +27,11 @@ export const Header: React.FC = () => {
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div 
-              className="w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-lg transform hover:rotate-6 transition-transform cursor-pointer"
-              style={{
-                background: 'linear-gradient(135deg, #F5569B 0%, #A88AED 50%, #CBD83B 100%)',
-              }}
-            >
-              <img 
-                src={logoImage} 
-                alt="NE Logo" 
-                className="w-full h-full object-cover relative z-10"
-                style={{
-                  mixBlendMode: 'screen',
-                  filter: 'brightness(1.2)',
-                }}
-              />
-            </div>
+            <img 
+              src={logoImage} 
+              alt="NE Logo" 
+              className="w-14 h-14 rounded-2xl shadow-lg transform hover:rotate-6 transition-transform cursor-pointer"
+            />
             <div className="hidden md:block">
               <div className="font-black text-xl text-black">
                 Natalia Egorova

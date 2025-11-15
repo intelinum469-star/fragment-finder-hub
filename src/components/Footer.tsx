@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Instagram, Facebook, Heart } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
+import neLogo from '../assets/ne-logo.png';
 
 export const Footer: React.FC = () => {
   const { t } = useLanguage();
@@ -13,14 +14,11 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           {/* Logo & Description */}
           <div>
-            <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-xl mb-4"
-              style={{
-                background: 'linear-gradient(135deg, #F5569B 0%, #A88AED 50%, #CBD83B 100%)',
-              }}
-            >
-              <span className="text-white text-3xl font-black relative z-10">NE</span>
-            </div>
+            <img 
+              src={neLogo} 
+              alt="Natalia Egorova Logo" 
+              className="w-16 h-16 rounded-2xl shadow-xl mb-4"
+            />
             <h3 className="font-black text-lg sm:text-xl text-black mb-2">
               Natalia Egorova
             </h3>
