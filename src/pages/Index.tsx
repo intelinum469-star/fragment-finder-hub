@@ -1,11 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { PaintSplashes } from "@/components/PaintSplashes";
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
+import { AboutMe } from "@/components/AboutMe";
+import { Formats } from "@/components/Formats";
+import { Prices } from "@/components/Prices";
+import { WhyMe } from "@/components/WhyMe";
+import { Process } from "@/components/Process";
+import { Portfolio } from "@/components/Portfolio";
+import { Contacts } from "@/components/Contacts";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-[#EFFEED] relative overflow-x-hidden">
+      <PaintSplashes />
+      <div className="relative z-10">
+        <Header />
+        <main className="pt-24 md:pt-28">
+          <Hero />
+          <AboutMe />
+          <Formats />
+          <Prices />
+          <WhyMe />
+          <Process />
+          <Portfolio />
+          <Contacts />
+        </main>
+        <Footer />
       </div>
     </div>
   );
