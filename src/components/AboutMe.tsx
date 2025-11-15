@@ -3,7 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Heart, Palette, Award } from 'lucide-react';
 import { FormattedText } from './FormattedText';
 import { AnimatedIcon } from './AnimatedIcon';
-import nataliaPhoto from '@/assets/natalia-photo.jpg';
+import nataliaPhoto from '@/assets/natalia-photo-new.jpg';
 
 const statsCards = [
   { icon: Award, value: '30+', label: 'about_stat1', color: '#F5569B' },
