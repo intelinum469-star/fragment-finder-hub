@@ -56,9 +56,9 @@ export const AboutMe: React.FC = () => {
               <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p3')} /></p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 justify-items-center">
               {statsCards.map((stat, index) => (
-                <div key={index} className="p-4 sm:p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
+                <div key={index} className="p-4 sm:p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1 w-full max-w-[200px] aspect-square flex flex-col items-center justify-center">
                   <AnimatedIcon delay={index * 0.1}>
                     <stat.icon className="w-10 h-10 mb-3" style={{ color: stat.color }} />
                   </AnimatedIcon>
