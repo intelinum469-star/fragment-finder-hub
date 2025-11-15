@@ -11,14 +11,11 @@ import { Contacts } from "@/components/Contacts";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
-  const { isEditMode } = useEditMode();
-  
   return (
     <div className="min-h-screen bg-[#EFFEED] relative overflow-x-hidden">
       <PaintSplashes />
       <div className="relative z-10">
         <Header />
-        <EditModeBanner />
         <main className="pt-24 md:pt-28">
           <Hero />
           <AboutMe />
@@ -26,7 +23,7 @@ const Index = () => {
           <Prices />
           <WhyMe />
           <Process />
-          {isEditMode ? <EditablePortfolio /> : <Portfolio />}
+          <Portfolio />
           <Contacts />
         </main>
         <Footer />
