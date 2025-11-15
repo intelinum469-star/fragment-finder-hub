@@ -49,7 +49,7 @@ export const Hero: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 relative z-10">
+    <section className="pt-20 sm:pt-24 md:pt-28 pb-12 sm:pb-16 relative z-10">
       <div className="container max-w-[1200px] mx-auto px-3 sm:px-4">
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12 items-center">
           {/* Left Content */}
