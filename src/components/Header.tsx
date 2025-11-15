@@ -24,13 +24,13 @@ export const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b-4 border-[#F5569B]">
       <div className="container max-w-[1400px] mx-auto px-6">
-        <div className="flex items-center justify-between py-3">
+        <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img 
               src={logoImage} 
               alt="NE Logo" 
-              className="w-14 h-14 rounded-2xl shadow-lg transform hover:rotate-6 transition-transform cursor-pointer"
+              className="w-14 h-14 rounded-2xl transform hover:rotate-6 transition-transform cursor-pointer"
             />
             <div className="hidden md:block">
               <div className="font-black text-xl text-black">

@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
             <img 
               src={neLogo} 
               alt="Natalia Egorova Logo" 
-              className="w-16 h-16 rounded-2xl shadow-xl mb-4"
+              className="w-16 h-16 rounded-2xl mb-4"
             />
             <h3 className="font-black text-lg sm:text-xl text-black mb-2">
               Natalia Egorova
