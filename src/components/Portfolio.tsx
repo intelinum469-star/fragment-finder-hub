@@ -25,6 +25,7 @@ interface PortfolioImage {
   description_ru: string | null;
   description_en: string | null;
   order_index: number;
+  media_type?: string;
 }
 
 export const Portfolio: React.FC = () => {

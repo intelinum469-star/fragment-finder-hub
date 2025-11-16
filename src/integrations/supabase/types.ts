@@ -55,6 +55,7 @@ export type Database = {
           description_ru: string | null
           id: string
           image_url: string
+          media_type: string | null
           order_index: number | null
           title_en: string | null
           title_ru: string | null
@@ -67,6 +68,7 @@ export type Database = {
           description_ru?: string | null
           id?: string
           image_url: string
+          media_type?: string | null
           order_index?: number | null
           title_en?: string | null
           title_ru?: string | null
@@ -79,6 +81,7 @@ export type Database = {
           description_ru?: string | null
           id?: string
           image_url?: string
+          media_type?: string | null
           order_index?: number | null
           title_en?: string | null
           title_ru?: string | null
