@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus, Upload, Loader2, X } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Loader2, X, GripVertical } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Category {
   id: string;
@@ -88,6 +91,49 @@ export const CategoriesManager = () => {
       toast({ title: 'Ошибка', description: error.message, variant: 'destructive' });
     },
   });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: { id: string; order_index: number }[]) => {
+      for (const update of updates) {
+        const { error } = await supabase
+          .from('portfolio_categories')
+          .update({ order_index: update.order_index })
+          .eq('id', update.id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+      toast({ title: 'Порядок категорий обновлен!' });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Ошибка', description: error.message, variant: 'destructive' });
+    },
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && categories) {
+      const oldIndex = categories.findIndex((cat) => cat.id === active.id);
+      const newIndex = categories.findIndex((cat) => cat.id === over.id);
+
+      const reorderedCategories = arrayMove(categories, oldIndex, newIndex);
+      const updates = reorderedCategories.map((cat, index) => ({
+        id: cat.id,
+        order_index: index,
+      }));
+
+      reorderMutation.mutate(updates);
+    }
+  };
 
   const handleImageUpload = async (file: File, categoryId?: string) => {
     setUploading(true);
@@ -174,81 +220,39 @@ export const CategoriesManager = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories?.map((category) => (
-          <div
-            key={category.id}
-            className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
+      {isLoading ? (
+        <div className="flex justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-[#F5569B]" />
+        </div>
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={categories?.map(c => c.id) || []}
+            strategy={verticalListSortingStrategy}
           >
-            {category.main_image_url ? (
-              <div className="relative aspect-video bg-gray-100">
-                <img
-                  src={category.main_image_url}
-                  alt={category.name_ru}
-                  className="w-full h-full object-cover"
-                />
-                <label className="absolute top-2 right-2 cursor-pointer">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleImageUpload(file, category.id);
-                    }}
-                  />
-                  <div className="bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100">
-                    <Upload className="w-4 h-4" />
-                  </div>
-                </label>
-              </div>
-            ) : (
-              <label className="aspect-video bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageUpload(file, category.id);
-                  }}
-                />
-                <Upload className="w-8 h-8 text-gray-400" />
-              </label>
-            )}
-            
-            <div className="p-4 space-y-2">
-              <h3 className="font-bold text-lg">{category.name_ru}</h3>
-              <p className="text-sm text-gray-600">{category.name_en}</p>
-              <p className="text-xs text-gray-500">Slug: {category.slug}</p>
-              
-              <div className="flex gap-2 pt-2">
-                <Button
-                  onClick={() => openDialog(category)}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  <Pencil className="w-4 h-4 mr-1" />
-                  Изменить
-                </Button>
-                <Button
-                  onClick={() => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {categories?.map((category) => (
+                <SortableCategoryItem
+                  key={category.id}
+                  category={category}
+                  uploading={uploading}
+                  onImageUpload={handleImageUpload}
+                  onEdit={openDialog}
+                  onDelete={(id) => {
                     if (confirm('Удалить эту категорию?')) {
-                      deleteMutation.mutate(category.id);
+                      deleteMutation.mutate(id);
                     }
                   }}
-                  variant="outline"
-                  size="sm"
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+                />
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
+          </SortableContext>
+        </DndContext>
+      )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
@@ -347,6 +351,118 @@ export const CategoriesManager = () => {
           </form>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+};
+
+interface SortableCategoryItemProps {
+  category: Category;
+  uploading: boolean;
+  onImageUpload: (file: File, categoryId?: string) => void;
+  onEdit: (category: Category) => void;
+  onDelete: (id: string) => void;
+}
+
+const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onDelete }: SortableCategoryItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
+    >
+      {category.main_image_url ? (
+        <div className="relative aspect-video bg-gray-100">
+          <img
+            src={category.main_image_url}
+            alt={category.name_ru}
+            className="w-full h-full object-cover"
+          />
+          <button
+            className="absolute top-2 left-2 bg-white/90 p-2 rounded-lg shadow-lg cursor-grab active:cursor-grabbing hover:bg-white z-10"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="w-4 h-4 text-gray-600" />
+          </button>
+          <label className="absolute top-2 right-2 cursor-pointer">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onImageUpload(file, category.id);
+              }}
+            />
+            <div className="bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100">
+              <Upload className="w-4 h-4" />
+            </div>
+          </label>
+        </div>
+      ) : (
+        <div className="aspect-video bg-gray-100 relative">
+          <button
+            className="absolute top-2 left-2 bg-white/90 p-2 rounded-lg shadow-lg cursor-grab active:cursor-grabbing hover:bg-white z-10"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="w-4 h-4 text-gray-600" />
+          </button>
+          <label className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-gray-200">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onImageUpload(file, category.id);
+              }}
+            />
+            <Upload className="w-8 h-8 text-gray-400" />
+          </label>
+        </div>
+      )}
+      
+      <div className="p-4 space-y-2">
+        <h3 className="font-bold text-lg">{category.name_ru}</h3>
+        <p className="text-sm text-gray-600">{category.name_en}</p>
+        <p className="text-xs text-gray-500">Slug: {category.slug}</p>
+        
+        <div className="flex gap-2 pt-2">
+          <Button
+            onClick={() => onEdit(category)}
+            variant="outline"
+            size="sm"
+            className="flex-1"
+          >
+            <Pencil className="w-4 h-4 mr-1" />
+            Изменить
+          </Button>
+          <Button
+            onClick={() => onDelete(category.id)}
+            variant="outline"
+            size="sm"
+            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
