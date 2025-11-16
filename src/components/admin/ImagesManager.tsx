@@ -6,8 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus, Upload, Loader2, X, ChevronLeft, Star } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Loader2, X, ChevronLeft, Star, GripVertical } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Category {
   id: string;
@@ -27,6 +30,96 @@ interface PortfolioImage {
   order_index: number;
   media_type?: string;
 }
+
+interface SortableImageItemProps {
+  image: PortfolioImage;
+  selectedCategory: Category | undefined;
+  selectedCategoryId: string;
+  onSetMainImage: (categoryId: string, imageUrl: string) => void;
+  onEdit: (image: PortfolioImage) => void;
+  onDelete: (id: string) => void;
+}
+
+const SortableImageItem = ({ image, selectedCategory, selectedCategoryId, onSetMainImage, onEdit, onDelete }: SortableImageItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
+    >
+      <div className="aspect-video bg-gray-100 relative">
+        <img
+          src={image.image_url}
+          alt={image.title_ru || ''}
+          className="w-full h-full object-cover"
+        />
+        {selectedCategory?.main_image_url === image.image_url && (
+          <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold">
+            <Star className="w-3 h-3 fill-white" />
+            Главное
+          </div>
+        )}
+        <button
+          className="absolute top-2 left-2 bg-white/90 p-2 rounded-lg shadow-lg cursor-grab active:cursor-grabbing hover:bg-white"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="w-4 h-4 text-gray-600" />
+        </button>
+      </div>
+      
+      <div className="p-4 space-y-2">
+        {image.title_ru && <h3 className="font-bold">{image.title_ru}</h3>}
+        {image.description_ru && (
+          <p className="text-sm text-gray-600 line-clamp-2">{image.description_ru}</p>
+        )}
+        
+        <div className="flex gap-2 pt-2">
+          <Button
+            onClick={() => onSetMainImage(selectedCategoryId, image.image_url)}
+            variant="outline"
+            size="sm"
+            className="flex-1 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+            disabled={selectedCategory?.main_image_url === image.image_url}
+          >
+            <Star className="w-4 h-4 mr-1" />
+            Главное
+          </Button>
+          <Button
+            onClick={() => onEdit(image)}
+            variant="outline"
+            size="sm"
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+          <Button
+            onClick={() => onDelete(image.id)}
+            variant="outline"
+            size="sm"
+            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const ImagesManager = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -137,6 +230,49 @@ export const ImagesManager = () => {
       toast({ title: 'Ошибка', description: error.message, variant: 'destructive' });
     },
   });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: { id: string; order_index: number }[]) => {
+      for (const update of updates) {
+        const { error } = await supabase
+          .from('portfolio_images')
+          .update({ order_index: update.order_index })
+          .eq('id', update.id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-images'] });
+      toast({ title: 'Порядок изображений обновлен!' });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Ошибка', description: error.message, variant: 'destructive' });
+    },
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && images) {
+      const oldIndex = images.findIndex((img) => img.id === active.id);
+      const newIndex = images.findIndex((img) => img.id === over.id);
+
+      const reorderedImages = arrayMove(images, oldIndex, newIndex);
+      const updates = reorderedImages.map((img, index) => ({
+        id: img.id,
+        order_index: index,
+      }));
+
+      reorderMutation.mutate(updates);
+    }
+  };
 
   const handleImageUpload = async (file: File) => {
     setUploading(true);
@@ -372,70 +508,36 @@ export const ImagesManager = () => {
           <Loader2 className="h-8 w-8 animate-spin text-[#F5569B]" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {images?.map((image) => (
-            <div
-              key={image.id}
-              className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
-            >
-              <div className="aspect-video bg-gray-100 relative">
-                <img
-                  src={image.image_url}
-                  alt={image.title_ru || ''}
-                  className="w-full h-full object-cover"
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={images?.map(img => img.id) || []}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {images?.map((image) => (
+                <SortableImageItem
+                  key={image.id}
+                  image={image}
+                  selectedCategory={selectedCategory}
+                  selectedCategoryId={selectedCategoryId!}
+                  onSetMainImage={(categoryId, imageUrl) => 
+                    setMainImageMutation.mutate({ categoryId, imageUrl })
+                  }
+                  onEdit={openDialog}
+                  onDelete={(id) => {
+                    if (confirm('Удалить это изображение?')) {
+                      deleteMutation.mutate(id);
+                    }
+                  }}
                 />
-                {selectedCategory?.main_image_url === image.image_url && (
-                  <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold">
-                    <Star className="w-3 h-3 fill-white" />
-                    Главное
-                  </div>
-                )}
-              </div>
-              
-              <div className="p-4 space-y-2">
-                {image.title_ru && <h3 className="font-bold">{image.title_ru}</h3>}
-                {image.description_ru && (
-                  <p className="text-sm text-gray-600 line-clamp-2">{image.description_ru}</p>
-                )}
-                
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    onClick={() => setMainImageMutation.mutate({
-                      categoryId: selectedCategoryId!,
-                      imageUrl: image.image_url,
-                    })}
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
-                    disabled={selectedCategory?.main_image_url === image.image_url}
-                  >
-                    <Star className="w-4 h-4 mr-1" />
-                    Главное
-                  </Button>
-                  <Button
-                    onClick={() => openDialog(image)}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (confirm('Удалить это изображение?')) {
-                        deleteMutation.mutate(image.id);
-                      }
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
