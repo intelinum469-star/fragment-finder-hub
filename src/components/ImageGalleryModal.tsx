@@ -31,6 +31,8 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   const { language } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const currentImage = images[currentIndex];
 
@@ -50,6 +52,32 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
     if (e.key === 'Escape') onClose();
   };
 
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrevious();
+    }
+  };
+
   if (!currentImage) return null;
 
   const title = language === 'ru' ? currentImage.title_ru : currentImage.title_en;
@@ -61,6 +89,9 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
       <DialogContent 
         className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-black/95 border-none"
         onKeyDown={handleKeyDown}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         <div className="relative w-full h-full flex flex-col">
           {/* Header */}
