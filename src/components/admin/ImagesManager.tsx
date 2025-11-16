@@ -63,7 +63,7 @@ const SortableImageItem = ({ image, selectedCategory, selectedCategoryId, onSetM
       className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
     >
       <div className="aspect-video bg-gray-100 relative">
-        {image.media_type === 'video' ? (
+        {(/\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(image.image_url) || image.media_type === 'video') ? (
           <video
             src={image.image_url}
             className="w-full h-full object-cover"
@@ -406,7 +406,7 @@ export const ImagesManager = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingImage || !editingImage.image_url) {
-      toast({ title: 'Ошибка', description: 'Загрузите изображение', variant: 'destructive' });
+      toast({ title: 'Ошибка', description: 'Загрузите файл', variant: 'destructive' });
       return;
     }
 
@@ -563,11 +563,21 @@ export const ImagesManager = () => {
               <Label>Изображение *</Label>
               {editingImage?.image_url ? (
                 <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src={editingImage.image_url}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                  />
+                  {(/\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(editingImage.image_url) || editingImage.media_type === 'video') ? (
+                    <video
+                      src={editingImage.image_url}
+                      className="w-full h-full object-cover"
+                      preload="metadata"
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={editingImage.image_url}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                   <button
                     type="button"
                     onClick={() => setEditingImage({ ...editingImage, image_url: '' })}
