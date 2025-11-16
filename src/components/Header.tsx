@@ -32,6 +32,7 @@ export const Header: React.FC = () => {
               src={logoImage} 
               alt="NE Logo" 
               className="w-14 h-14 rounded-2xl transform hover:rotate-6 transition-transform cursor-pointer"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             />
             <div className="hidden md:block">
               <div className="font-black text-xl text-black">
@@ -42,15 +43,15 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Desktop Navigation - Icons */}
-          <nav className="hidden md:flex items-center gap-4 overflow-x-auto sm:gap-5">
+          <nav className="hidden md:flex items-center gap-2 lg:gap-4">
             <button
               onClick={() => scrollToSection('#about')}
               className="group flex flex-col items-center transition-all hover:scale-105"
               title="About"
             >
-              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-3xl bg-gradient-to-br from-[#FFCBEB] to-[#F5569B] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                 <AnimatedIcon delay={0.1} yOffset={10}>
-                  <User className="w-7 h-7 text-white" />
+                  <User className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
@@ -59,9 +60,9 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center transition-all hover:scale-105"
               title="Formats"
             >
-              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#E8F279] to-[#CBD83B] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-3xl bg-gradient-to-br from-[#E8F279] to-[#CBD83B] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                 <AnimatedIcon delay={0.15} yOffset={10}>
-                  <Palette className="w-7 h-7 text-white" />
+                  <Palette className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
@@ -70,9 +71,9 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center transition-all hover:scale-105"
               title="Portfolio"
             >
-              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#B8A3F5] to-[#A88AED] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-3xl bg-gradient-to-br from-[#B8A3F5] to-[#A88AED] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                 <AnimatedIcon delay={0.2} yOffset={10}>
-                  <Images className="w-7 h-7 text-white" />
+                  <Images className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
@@ -81,9 +82,9 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center transition-all hover:scale-105"
               title="Prices"
             >
-              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#F782B9] to-[#F5569B] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-3xl bg-gradient-to-br from-[#F782B9] to-[#F5569B] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                 <AnimatedIcon delay={0.25} yOffset={10}>
-                  <DollarSign className="w-6 h-6 text-white" />
+                  <DollarSign className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
@@ -92,9 +93,9 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center transition-all hover:scale-105"
               title="Process"
             >
-              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#4A8BD9] to-[#1355B2] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-3xl bg-gradient-to-br from-[#4A8BD9] to-[#1355B2] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                 <AnimatedIcon delay={0.25} yOffset={10}>
-                  <ListChecks className="w-7 h-7 text-white" />
+                  <ListChecks className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
                 </AnimatedIcon>
               </div>
             </button>
@@ -103,9 +104,9 @@ export const Header: React.FC = () => {
               className="group flex flex-col items-center transition-all hover:scale-105"
               title="Contacts"
             >
-              <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-[#FFCBEB] to-[#FFA4D1] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-3xl bg-gradient-to-br from-[#FFCBEB] to-[#FFA4D1] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                 <AnimatedIcon delay={0.3} yOffset={10}>
-                  <Mail className="w-7 h-7 text-white" />
+                  <Mail className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
                 </AnimatedIcon>
               </div>
             </button>

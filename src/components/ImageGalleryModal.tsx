@@ -80,17 +80,22 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
           </div>
 
           {/* Main Image */}
-          <div className="flex-1 flex items-center justify-center p-4 sm:p-12 pt-20 pb-24">
+          <div className="flex-1 flex items-center justify-center px-4 sm:px-8 pt-24 pb-32">
             <div 
-              className={`relative max-w-full max-h-full transition-transform duration-300 cursor-zoom-in ${
-                isZoomed ? 'scale-150 cursor-zoom-out' : ''
+              className={`relative transition-transform duration-300 ${
+                isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
               }`}
               onClick={() => setIsZoomed(!isZoomed)}
+              style={{ maxHeight: 'calc(100vh - 280px)', maxWidth: 'calc(100vw - 80px)' }}
             >
               <img
                 src={currentImage.image_url}
                 alt={title || categoryName}
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                style={{ 
+                  maxHeight: isZoomed ? 'none' : 'calc(100vh - 280px)',
+                  maxWidth: isZoomed ? 'none' : 'calc(100vw - 80px)'
+                }}
               />
               {!isZoomed && (
                 <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full p-2">
