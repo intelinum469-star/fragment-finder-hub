@@ -109,21 +109,21 @@ export const Portfolio: React.FC = () => {
               <button
                 key={category.id}
                 onClick={() => handleCategoryClick(category)}
-                className="group relative rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-2 text-left"
+                className="group relative rounded-3xl overflow-hidden shadow-2xl md:hover:shadow-3xl transition-all duration-300 md:hover:-translate-y-2 text-left touch-manipulation active:scale-95"
               >
                 <div className="aspect-square relative overflow-hidden">
                   {category.main_image_url ? (
                     <img
                       src={category.main_image_url}
                       alt={getCategoryName(category)}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-500"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#A88AED] to-[#F5569B] flex items-center justify-center">
                       <Images className="w-16 h-16 text-white opacity-50" />
                     </div>
                   )}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <div className="absolute inset-0 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-sm flex items-center justify-center pointer-events-none">
                     <img 
                       src={logoTransparent} 
                       alt="NE Logo" 
