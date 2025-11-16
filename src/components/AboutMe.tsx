@@ -54,6 +54,7 @@ export const AboutMe: React.FC = () => {
               <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p1')} /></p>
               <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p2')} /></p>
               <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p3')} /></p>
+              <p className="text-base sm:text-lg text-black leading-relaxed"><FormattedText text={t('about_p4')} /></p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 justify-items-center">

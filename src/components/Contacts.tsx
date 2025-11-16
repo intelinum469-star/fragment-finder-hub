@@ -57,8 +57,8 @@ export const Contacts: React.FC = () => {
           <div className="p-6 sm:p-8 rounded-3xl shadow-2xl bg-gradient-to-br from-[#F5569B]/30 via-[#A88AED]/20 to-[#1355B2]/20 backdrop-blur-sm">
             <div className="mb-6">
               <h3 className="text-xl sm:text-2xl font-black mb-2 text-black">{t('write_me')}</h3>
-              <p className="text-xs sm:text-sm text-black/80 mb-1">Email: your@email.com</p>
-              <p className="text-xs sm:text-sm text-black/80">Instagram: @your_instagram</p>
+              <p className="text-xs sm:text-sm text-black/80 mb-1">Email: <a href="mailto:eg.nati74@gmail.com" className="hover:text-[#F5569B] transition-colors">eg.nati74@gmail.com</a></p>
+              <p className="text-xs sm:text-sm text-black/80">Instagram: <a href="https://www.instagram.com/nataly_art_italy/" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5569B] transition-colors">@nataly_art_italy</a></p>
             </div>
             <div className="mb-6">
               <h4 className="text-base sm:text-lg font-bold mb-2 text-black">{t('request_format')}</h4>
