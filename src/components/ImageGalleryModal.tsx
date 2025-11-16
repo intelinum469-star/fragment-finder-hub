@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Image {
@@ -82,7 +82,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
 
   const title = language === 'ru' ? currentImage.title_ru : currentImage.title_en;
   const description = language === 'ru' ? currentImage.description_ru : currentImage.description_en;
-  const isVideo = currentImage.media_type === 'video';
+  const isVideo = (currentImage.media_type === 'video') || /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(currentImage.image_url);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -93,6 +93,8 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
+        <DialogTitle className="sr-only">{categoryName}</DialogTitle>
+        <DialogDescription className="sr-only">Media viewer with swipe navigation</DialogDescription>
         <div className="relative w-full h-full flex flex-col">
           {/* Header */}
           <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 sm:p-6">
@@ -199,11 +201,21 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
                         : 'opacity-50 hover:opacity-100'
                     }`}
                   >
-                    <img
-                      src={image.image_url}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                    { (image.media_type === 'video') || /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(image.image_url) ? (
+                      <video
+                        src={image.image_url}
+                        className="w-full h-full object-cover"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                    ) : (
+                      <img
+                        src={image.image_url}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) }
                   </button>
                 ))}
               </div>
