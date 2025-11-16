@@ -158,7 +158,7 @@ export const ImagesManager = () => {
         setEditingImage({ ...editingImage, image_url: publicUrl });
       }
 
-      toast({ title: 'Изображение загружено!' });
+      toast({ title: 'Файл загружен!' });
     } catch (error: any) {
       toast({ title: 'Ошибка загрузки', description: error.message, variant: 'destructive' });
     } finally {
@@ -322,7 +322,7 @@ export const ImagesManager = () => {
           ref={bulkInputRef}
           type="file"
           multiple
-          accept="image/*"
+          accept="image/*,video/*"
           className="hidden"
           onChange={(e) => {
             if (e.target.files && e.target.files.length > 0) {
@@ -458,7 +458,7 @@ export const ImagesManager = () => {
                 <label className="aspect-video bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 rounded-lg border-2 border-dashed border-gray-300">
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0];

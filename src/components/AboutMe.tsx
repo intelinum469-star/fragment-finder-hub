@@ -59,12 +59,12 @@ export const AboutMe: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 justify-items-center">
               {statsCards.map((stat, index) => (
-                <div key={index} className="p-4 sm:p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1 w-full max-w-[200px] aspect-square flex flex-col items-center justify-center">
+                <div key={index} className="p-4 sm:p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1 w-full max-w-[200px] aspect-square flex flex-col items-center justify-center text-center">
                   <AnimatedIcon delay={index * 0.1}>
                     <stat.icon className="w-10 h-10 mb-3" style={{ color: stat.color }} />
                   </AnimatedIcon>
                    <div className="text-3xl sm:text-4xl font-black mb-2" style={{ color: stat.color }}>{stat.value}</div>
-                   <div className="text-xs sm:text-sm text-black font-medium">{t(stat.label)}</div>
+                   <div className="text-xs sm:text-sm text-black font-medium leading-tight px-2">{t(stat.label)}</div>
                 </div>
               ))}
             </div>

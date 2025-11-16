@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Images, ArrowRight, Loader2 } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
 import { ImageGalleryModal } from './ImageGalleryModal';
+import logoTransparent from '@/assets/ne-logo-transparent.png';
 
 interface Category {
   id: string;
@@ -121,10 +122,13 @@ export const Portfolio: React.FC = () => {
                       <Images className="w-16 h-16 text-white opacity-50" />
                     </div>
                   )}
-                  <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ background: 'linear-gradient(135deg, rgba(168,138,237,0.9) 0%, rgba(245,86,155,0.9) 100%)' }}
-                  />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <img 
+                      src={logoTransparent} 
+                      alt="NE Logo" 
+                      className="w-32 h-32 opacity-60"
+                    />
+                  </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <p className="text-white font-bold text-base sm:text-lg">{getCategoryName(category)}</p>
