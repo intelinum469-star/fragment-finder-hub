@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
             </h4>
             <div className="flex gap-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/nataly_art_italy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group"
@@ -52,7 +52,7 @@ export const Footer: React.FC = () => {
                 </div>
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/share/19pmmBeKo3/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group"
@@ -74,7 +74,10 @@ export const Footer: React.FC = () => {
             <h4 className="font-bold text-base sm:text-lg mb-4 text-black">Contact</h4>
             <div className="text-sm text-black text-left md:text-right">
               <p className="mb-2 font-medium">online · USA / Italy</p>
-              <p>RU / IT / EN</p>
+              <p className="mb-2">RU / IT / EN</p>
+              <a href="mailto:eg.nati74@gmail.com" className="hover:text-[#F5569B] transition-colors">
+                eg.nati74@gmail.com
+              </a>
             </div>
           </div>
         </div>
