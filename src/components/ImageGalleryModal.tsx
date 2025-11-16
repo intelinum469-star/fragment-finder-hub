@@ -115,7 +115,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
           </div>
 
           {/* Main Content - Image or Video */}
-          <div className="flex-1 flex items-center justify-center px-4 sm:px-8 pt-24 pb-32">
+          <div className="flex-1 flex items-center justify-center px-2 sm:px-8 pt-20 pb-28 sm:pt-24 sm:pb-32">
             {isVideo ? (
               <div className="relative w-full h-full flex items-center justify-center">
                 <video
@@ -123,10 +123,10 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
                   src={currentImage.image_url}
                   controls
                   autoPlay
-                  className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  playsInline
+                  className="w-full h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                   style={{ 
-                    maxHeight: 'calc(100vh - 280px)',
-                    maxWidth: 'calc(100vw - 80px)'
+                    maxHeight: 'calc(100vh - 240px)',
                   }}
                 >
                   Your browser does not support the video tag.
@@ -138,15 +138,14 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
                   isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
                 }`}
                 onClick={() => setIsZoomed(!isZoomed)}
-                style={{ maxHeight: 'calc(100vh - 280px)', maxWidth: 'calc(100vw - 80px)' }}
+                style={{ maxHeight: 'calc(100vh - 240px)' }}
               >
                 <img
                   src={currentImage.image_url}
                   alt={title || categoryName}
-                  className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  className="w-full h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                   style={{ 
-                    maxHeight: isZoomed ? 'none' : 'calc(100vh - 280px)',
-                    maxWidth: isZoomed ? 'none' : 'calc(100vw - 80px)'
+                    maxHeight: isZoomed ? 'none' : 'calc(100vh - 240px)',
                   }}
                 />
                 {!isZoomed && (
