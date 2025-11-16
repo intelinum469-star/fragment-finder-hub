@@ -25,6 +25,7 @@ interface PortfolioImage {
   description_ru: string | null;
   description_en: string | null;
   order_index: number;
+  media_type?: string;
 }
 
 export const ImagesManager = () => {
@@ -155,7 +156,12 @@ export const ImagesManager = () => {
         .getPublicUrl(filePath);
 
       if (editingImage) {
-        setEditingImage({ ...editingImage, image_url: publicUrl });
+        const isVideo = file.type.startsWith('video/');
+        setEditingImage({ 
+          ...editingImage, 
+          image_url: publicUrl,
+          media_type: isVideo ? 'video' : 'image'
+        });
       }
 
       toast({ title: 'Файл загружен!' });
@@ -193,6 +199,8 @@ export const ImagesManager = () => {
           .from('portfolio-images')
           .getPublicUrl(filePath);
 
+        const isVideo = file.type.startsWith('video/');
+
         const { error: insertError } = await supabase
           .from('portfolio_images')
           .insert({
@@ -203,6 +211,7 @@ export const ImagesManager = () => {
             description_ru: null,
             description_en: null,
             order_index: maxOrderIndex + i + 1,
+            media_type: isVideo ? 'video' : 'image',
           });
 
         if (insertError) throw insertError;
@@ -237,6 +246,7 @@ export const ImagesManager = () => {
         description_ru: '',
         description_en: '',
         order_index: images?.length || 0,
+        media_type: 'image',
       });
     }
     setIsDialogOpen(true);

@@ -10,6 +10,7 @@ interface Image {
   title_en: string | null;
   description_ru: string | null;
   description_en: string | null;
+  media_type?: string;
 }
 
 interface ImageGalleryModalProps {
@@ -53,6 +54,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
 
   const title = language === 'ru' ? currentImage.title_ru : currentImage.title_en;
   const description = language === 'ru' ? currentImage.description_ru : currentImage.description_en;
+  const isVideo = currentImage.media_type === 'video';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -79,30 +81,48 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
             </div>
           </div>
 
-          {/* Main Image */}
+          {/* Main Content - Image or Video */}
           <div className="flex-1 flex items-center justify-center px-4 sm:px-8 pt-24 pb-32">
-            <div 
-              className={`relative transition-transform duration-300 ${
-                isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
-              }`}
-              onClick={() => setIsZoomed(!isZoomed)}
-              style={{ maxHeight: 'calc(100vh - 280px)', maxWidth: 'calc(100vw - 80px)' }}
-            >
-              <img
-                src={currentImage.image_url}
-                alt={title || categoryName}
-                className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                style={{ 
-                  maxHeight: isZoomed ? 'none' : 'calc(100vh - 280px)',
-                  maxWidth: isZoomed ? 'none' : 'calc(100vw - 80px)'
-                }}
-              />
-              {!isZoomed && (
-                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full p-2">
-                  <ZoomIn className="w-5 h-5 text-white" />
-                </div>
-              )}
-            </div>
+            {isVideo ? (
+              <div className="relative w-full h-full flex items-center justify-center">
+                <video
+                  key={currentImage.id}
+                  src={currentImage.image_url}
+                  controls
+                  autoPlay
+                  className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  style={{ 
+                    maxHeight: 'calc(100vh - 280px)',
+                    maxWidth: 'calc(100vw - 80px)'
+                  }}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            ) : (
+              <div 
+                className={`relative transition-transform duration-300 ${
+                  isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
+                }`}
+                onClick={() => setIsZoomed(!isZoomed)}
+                style={{ maxHeight: 'calc(100vh - 280px)', maxWidth: 'calc(100vw - 80px)' }}
+              >
+                <img
+                  src={currentImage.image_url}
+                  alt={title || categoryName}
+                  className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  style={{ 
+                    maxHeight: isZoomed ? 'none' : 'calc(100vh - 280px)',
+                    maxWidth: isZoomed ? 'none' : 'calc(100vw - 80px)'
+                  }}
+                />
+                {!isZoomed && (
+                  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full p-2">
+                    <ZoomIn className="w-5 h-5 text-white" />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Navigation Arrows */}
