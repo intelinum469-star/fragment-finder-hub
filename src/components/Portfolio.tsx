@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Images, ArrowRight, Loader2 } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
 import { ImageGalleryModal } from './ImageGalleryModal';
-import logoTransparent from '@/assets/ne-logo-transparent.png';
+import logoTransparent from '@/assets/ne-logo-new.png';
 
 interface Category {
   id: string;

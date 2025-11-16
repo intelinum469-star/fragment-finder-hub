@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Palette, Home, Images, DollarSign, ListChecks, Mail, Globe, Menu, X, User } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
-import logoImage from '../assets/ne-logo-transparent.png';
+import logoImage from '../assets/ne-logo-new.png';
 
 export const Header: React.FC = () => {
   const { language, setLanguage } = useLanguage();

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Instagram, Facebook, Heart } from 'lucide-react';
 import { AnimatedIcon } from './AnimatedIcon';
-import neLogo from '../assets/ne-logo.png';
+import neLogo from '../assets/ne-logo-new.png';
 
 export const Footer: React.FC = () => {
   const { t } = useLanguage();
