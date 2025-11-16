@@ -113,11 +113,21 @@ export const Portfolio: React.FC = () => {
               >
                 <div className="aspect-square relative overflow-hidden">
                   {category.main_image_url ? (
-                    <img
-                      src={category.main_image_url}
-                      alt={getCategoryName(category)}
-                      className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-500"
-                    />
+                    category.main_image_url.includes('.mp4') || category.main_image_url.includes('.mov') || category.main_image_url.includes('.webm') ? (
+                      <video
+                        src={category.main_image_url}
+                        className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-500"
+                        preload="metadata"
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <img
+                        src={category.main_image_url}
+                        alt={getCategoryName(category)}
+                        className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-500"
+                      />
+                    )
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#A88AED] to-[#F5569B] flex items-center justify-center">
                       <Images className="w-16 h-16 text-white opacity-50" />

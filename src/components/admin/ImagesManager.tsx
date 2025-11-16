@@ -63,11 +63,21 @@ const SortableImageItem = ({ image, selectedCategory, selectedCategoryId, onSetM
       className="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-[#F5569B] transition-all"
     >
       <div className="aspect-video bg-gray-100 relative">
-        <img
-          src={image.image_url}
-          alt={image.title_ru || ''}
-          className="w-full h-full object-cover"
-        />
+        {image.media_type === 'video' ? (
+          <video
+            src={image.image_url}
+            className="w-full h-full object-cover"
+            preload="metadata"
+            muted
+            playsInline
+          />
+        ) : (
+          <img
+            src={image.image_url}
+            alt={image.title_ru || ''}
+            className="w-full h-full object-cover"
+          />
+        )}
         {selectedCategory?.main_image_url === image.image_url && (
           <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold">
             <Star className="w-3 h-3 fill-white" />
