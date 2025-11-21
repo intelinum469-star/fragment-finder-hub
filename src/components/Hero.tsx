@@ -171,8 +171,7 @@ export const Hero: React.FC = () => {
             {heroCards.slice(0, 3).map((card, index) => (
               <div
                 key={index}
-                onClick={() => handleCardClick(card.categorySlug, t(card.title))}
-                className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 cursor-pointer hover:scale-105 ${card.rotate} ${index === 2 ? 'col-span-2' : ''}`}
+                className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ${index === 2 ? 'col-span-2' : ''}`}
                 style={{ background: card.bg }}
               >
                 <div className={`${index === 2 ? 'aspect-[2/1]' : 'aspect-square'} relative overflow-hidden`}>
