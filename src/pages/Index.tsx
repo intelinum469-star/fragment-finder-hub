@@ -19,11 +19,11 @@ const Index = () => {
         <main className="pt-24 md:pt-28">
           <Hero />
           <AboutMe />
+          <Portfolio />
           <Formats />
           <Prices />
           <WhyMe />
           <Process />
-          <Portfolio />
           <Contacts />
         </main>
         <Footer />
