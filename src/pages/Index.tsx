@@ -6,7 +6,6 @@ import { Formats } from "@/components/Formats";
 import { Prices } from "@/components/Prices";
 import { WhyMe } from "@/components/WhyMe";
 import { Process } from "@/components/Process";
-import { Portfolio } from "@/components/Portfolio";
 import { Contacts } from "@/components/Contacts";
 import { Footer } from "@/components/Footer";
 
@@ -19,7 +18,6 @@ const Index = () => {
         <main className="pt-24 md:pt-28">
           <Hero />
           <AboutMe />
-          <Portfolio />
           <Formats />
           <Prices />
           <WhyMe />
