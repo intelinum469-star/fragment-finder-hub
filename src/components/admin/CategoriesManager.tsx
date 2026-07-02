@@ -243,6 +243,9 @@ export const CategoriesManager = () => {
                   uploading={uploading}
                   onImageUpload={handleImageUpload}
                   onEdit={openDialog}
+                  onToggleVisibility={(id, is_visible) =>
+                    updateMutation.mutate({ id, is_visible })
+                  }
                   onDelete={(id) => {
                     if (confirm('Удалить эту категорию?')) {
                       deleteMutation.mutate(id);
@@ -361,10 +364,11 @@ interface SortableCategoryItemProps {
   uploading: boolean;
   onImageUpload: (file: File, categoryId?: string) => void;
   onEdit: (category: Category) => void;
+  onToggleVisibility: (id: string, is_visible: boolean) => void;
   onDelete: (id: string) => void;
 }
 
-const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onDelete }: SortableCategoryItemProps) => {
+const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onToggleVisibility, onDelete }: SortableCategoryItemProps) => {
   const {
     attributes,
     listeners,
@@ -440,11 +444,28 @@ const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onDe
       )}
       
       <div className="p-4 space-y-2">
-        <h3 className="font-bold text-lg">{category.name_ru}</h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-bold text-lg">{category.name_ru}</h3>
+          {category.is_visible === false && (
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">Скрыто</span>
+          )}
+        </div>
         <p className="text-sm text-gray-600">{category.name_en}</p>
         <p className="text-xs text-gray-500">Slug: {category.slug}</p>
         
         <div className="flex gap-2 pt-2">
+          <Button
+            onClick={() => onToggleVisibility(category.id, !(category.is_visible !== false))}
+            variant="outline"
+            size="sm"
+            title={category.is_visible !== false ? 'Скрыть с сайта' : 'Показать на сайте'}
+          >
+            {category.is_visible !== false ? (
+              <Eye className="w-4 h-4" />
+            ) : (
+              <EyeOff className="w-4 h-4 text-gray-400" />
+            )}
+          </Button>
           <Button
             onClick={() => onEdit(category)}
             variant="outline"
