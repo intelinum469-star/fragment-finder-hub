@@ -35,7 +35,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   const [isZoomed, setIsZoomed] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('single');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const thumbsRef = useRef<HTMLDivElement>(null);
 
   const currentImage = images[currentIndex];
@@ -45,7 +45,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
     if (isOpen) {
       setCurrentIndex(initialIndex);
       setIsZoomed(false);
-      setViewMode('single');
+      setViewMode('grid');
     }
   }, [isOpen, initialIndex]);
 
