@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, Grid3X3, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, ZoomIn, Grid3X3, Maximize2, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
