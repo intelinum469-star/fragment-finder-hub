@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CategoriesManager } from '@/components/admin/CategoriesManager';
 import { ImagesManager } from '@/components/admin/ImagesManager';
 import { SectionsManager } from '@/components/admin/SectionsManager';
+import { Seo } from '@/components/Seo';
 
 const AdminDashboard = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -105,6 +106,12 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#EFFEED]">
+      <Seo
+        title="Admin Dashboard — Natalia Egorova"
+        description="Manage portfolio content, images, and site sections."
+        path="/admin"
+        noindex
+      />
       <div className="container max-w-[1400px] mx-auto px-6 py-8">
         <div className="bg-white rounded-3xl shadow-xl p-8 border-4 border-[#F5569B]">
           <div className="flex justify-between items-center mb-8">
