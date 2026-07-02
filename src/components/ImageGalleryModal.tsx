@@ -159,12 +159,12 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
               <button
                 onClick={() => setViewMode(viewMode === 'grid' ? 'single' : 'grid')}
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
-                title={viewMode === 'grid' ? 'Single view' : 'All works'}
+                title={viewMode === 'grid' ? 'Single view' : 'Back to grid'}
               >
                 {viewMode === 'grid' ? (
                   <Maximize2 className="w-5 h-5 text-white" />
                 ) : (
-                  <Grid3X3 className="w-5 h-5 text-white" />
+                  <ArrowLeft className="w-5 h-5 text-white" />
                 )}
               </button>
             )}
