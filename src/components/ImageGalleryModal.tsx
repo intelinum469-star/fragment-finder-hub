@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { X, ChevronLeft, ChevronRight, ZoomIn, Grid3X3, Maximize2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -21,6 +21,8 @@ interface ImageGalleryModalProps {
   initialIndex?: number;
 }
 
+type ViewMode = 'single' | 'grid';
+
 export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   isOpen,
   onClose,
@@ -33,8 +35,29 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   const [isZoomed, setIsZoomed] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('single');
+  const thumbsRef = useRef<HTMLDivElement>(null);
 
   const currentImage = images[currentIndex];
+
+  // Reset state when opening
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIndex(initialIndex);
+      setIsZoomed(false);
+      setViewMode('single');
+    }
+  }, [isOpen, initialIndex]);
+
+  // Auto-scroll thumbnail strip to current item
+  useEffect(() => {
+    if (viewMode === 'single' && thumbsRef.current) {
+      const thumb = thumbsRef.current.children[currentIndex] as HTMLElement;
+      if (thumb) {
+        thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  }, [currentIndex, viewMode]);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
@@ -47,12 +70,21 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (viewMode === 'grid') {
+      if (e.key === 'Escape') {
+        if (isZoomed) setIsZoomed(false);
+        else setViewMode('single');
+      }
+      return;
+    }
     if (e.key === 'ArrowLeft') handlePrevious();
     if (e.key === 'ArrowRight') handleNext();
-    if (e.key === 'Escape') onClose();
+    if (e.key === 'Escape') {
+      if (isZoomed) setIsZoomed(false);
+      else onClose();
+    }
   };
 
-  // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -65,162 +97,229 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    
+    if (!touchStart || !touchEnd || isZoomed) return;
     const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe) {
-      handleNext();
-    } else if (isRightSwipe) {
-      handlePrevious();
-    }
+    if (distance > minSwipeDistance) handleNext();
+    else if (distance < -minSwipeDistance) handlePrevious();
   };
 
-  if (!currentImage) return null;
+  if (!currentImage && viewMode === 'single') return null;
 
-  const title = language === 'ru' ? currentImage.title_ru : currentImage.title_en;
-  const description = language === 'ru' ? currentImage.description_ru : currentImage.description_en;
-  const isVideo = (currentImage.media_type === 'video') || /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(currentImage.image_url);
+  const getTitle = (img: Image) => language === 'ru' ? img.title_ru : img.title_en;
+  const getDescription = (img: Image) => language === 'ru' ? img.description_ru : img.description_en;
+
+  const isVideo = (img: Image) =>
+    img.media_type === 'video' || /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(img.image_url);
+
+  const handleThumbnailClick = (index: number) => {
+    setCurrentIndex(index);
+    setIsZoomed(false);
+    setViewMode('single');
+  };
+
+  const handleGridItemClick = (index: number) => {
+    setCurrentIndex(index);
+    setViewMode('single');
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
-        className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-black/95 border-none"
+      <DialogContent
+        className="max-w-[100vw] max-h-[100vh] w-full h-full p-0 bg-black/95 border-none rounded-none"
         onKeyDown={handleKeyDown}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
       >
         <DialogTitle className="sr-only">{categoryName}</DialogTitle>
-        <DialogDescription className="sr-only">Media viewer with swipe navigation</DialogDescription>
-        <div className="relative w-full h-full flex flex-col">
-          {/* Header */}
-          <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-white font-bold text-lg sm:text-xl">{categoryName}</h3>
-                <p className="text-white/70 text-sm">
-                  {currentIndex + 1} / {images.length}
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
-              >
-                <X className="w-6 h-6 text-white" />
-              </button>
-            </div>
-          </div>
+        <DialogDescription className="sr-only">Media viewer with gallery navigation</DialogDescription>
 
-          {/* Main Content - Image or Video */}
-          <div className="flex-1 flex items-center justify-center px-2 sm:px-8 pt-20 pb-28 sm:pt-24 sm:pb-32">
-            {isVideo ? (
-              <div className="relative w-full h-full flex items-center justify-center">
-                <video
-                  key={currentImage.id}
-                  src={currentImage.image_url}
-                  controls
-                  autoPlay
-                  playsInline
-                  className="w-full h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                  style={{ 
-                    maxHeight: 'calc(100vh - 240px)',
-                  }}
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            ) : (
-              <div 
-                className={`relative transition-transform duration-300 ${
-                  isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
-                }`}
-                onClick={() => setIsZoomed(!isZoomed)}
-                style={{ maxHeight: 'calc(100vh - 240px)' }}
-              >
-                <img
-                  src={currentImage.image_url}
-                  alt={title || categoryName}
-                  className="w-full h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                  style={{ 
-                    maxHeight: isZoomed ? 'none' : 'calc(100vh - 240px)',
-                  }}
-                />
-                {!isZoomed && (
-                  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full p-2">
-                    <ZoomIn className="w-5 h-5 text-white" />
-                  </div>
-                )}
-              </div>
+        {/* Header */}
+        <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/80 to-transparent px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-white font-bold text-base sm:text-lg">{categoryName}</h3>
+            {viewMode === 'single' && images.length > 1 && (
+              <p className="text-white/60 text-xs sm:text-sm">
+                {currentIndex + 1} / {images.length}
+              </p>
             )}
           </div>
-
-          {/* Navigation Arrows */}
-          {images.length > 1 && (
-            <>
-              <button
-                onClick={handlePrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors z-10"
-              >
-                <ChevronLeft className="w-6 h-6 text-white" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors z-10"
-              >
-                <ChevronRight className="w-6 h-6 text-white" />
-              </button>
-            </>
-          )}
-
-          {/* Bottom Info & Thumbnails */}
-          <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 to-transparent p-4 sm:p-6">
-            {(title || description) && (
-              <div className="mb-4">
-                {title && <h4 className="text-white font-bold text-base sm:text-lg mb-1">{title}</h4>}
-                {description && <p className="text-white/80 text-sm">{description}</p>}
-              </div>
-            )}
-
-            {/* Thumbnail Strip */}
+          <div className="flex items-center gap-2">
             {images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-                {images.map((image, index) => (
-                  <button
-                    key={image.id}
-                    onClick={() => {
-                      setCurrentIndex(index);
-                      setIsZoomed(false);
-                    }}
-                    className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden transition-all ${
-                      index === currentIndex
-                        ? 'ring-2 ring-[#F5569B] scale-110'
-                        : 'opacity-50 hover:opacity-100'
-                    }`}
-                  >
-                    { (image.media_type === 'video') || /\.(mp4|mov|webm|ogg)(\?.*)?$/i.test(image.image_url) ? (
-                      <video
-                        src={image.image_url}
-                        className="w-full h-full object-cover"
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
-                    ) : (
-                      <img
-                        src={image.image_url}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) }
-                  </button>
-                ))}
-              </div>
+              <button
+                onClick={() => setViewMode(viewMode === 'grid' ? 'single' : 'grid')}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
+                title={viewMode === 'grid' ? 'Single view' : 'All works'}
+              >
+                {viewMode === 'grid' ? (
+                  <Maximize2 className="w-5 h-5 text-white" />
+                ) : (
+                  <Grid3X3 className="w-5 h-5 text-white" />
+                )}
+              </button>
             )}
+            <button
+              onClick={onClose}
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
+              title="Close"
+            >
+              <X className="w-5 h-5 text-white" />
+            </button>
           </div>
         </div>
+
+        {/* ===== GRID VIEW ===== */}
+        {viewMode === 'grid' && (
+          <div className="w-full h-full pt-16 pb-6 px-4 overflow-y-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+              {images.map((image, index) => (
+                <button
+                  key={image.id}
+                  onClick={() => handleGridItemClick(index)}
+                  className="relative aspect-square rounded-xl overflow-hidden bg-neutral-900 hover:ring-2 hover:ring-[#F5569B] transition-all group"
+                >
+                  {isVideo(image) ? (
+                    <video
+                      src={image.image_url}
+                      className="w-full h-full object-cover"
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                  ) : (
+                    <img
+                      src={image.image_url}
+                      alt={getTitle(image) || `${categoryName} ${index + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ===== SINGLE VIEW ===== */}
+        {viewMode === 'single' && currentImage && (
+          <div
+            className="relative w-full h-full flex flex-col"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            {/* Main Media */}
+            <div className="flex-1 flex items-center justify-center px-2 sm:px-6 pt-16 pb-36 sm:pb-40">
+              {isVideo(currentImage) ? (
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <video
+                    key={currentImage.id}
+                    src={currentImage.image_url}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg"
+                    style={{ maxHeight: 'calc(100vh - 220px)' }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              ) : (
+                <div
+                  className={`relative transition-transform duration-300 ${
+                    isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
+                  }`}
+                  onClick={() => setIsZoomed(!isZoomed)}
+                >
+                  <img
+                    src={currentImage.image_url}
+                    alt={getTitle(currentImage) || categoryName}
+                    className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg"
+                    style={{ maxHeight: 'calc(100vh - 220px)' }}
+                  />
+                  {!isZoomed && (
+                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full p-2">
+                      <ZoomIn className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Navigation arrows */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={handlePrevious}
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors z-10"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors z-10"
+                >
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </button>
+              </>
+            )}
+
+            {/* Bottom panel */}
+            <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/90 via-black/60 to-transparent px-4 pb-4 pt-8 sm:px-6 sm:pb-6 sm:pt-10">
+              {/* Title & description */}
+              {(getTitle(currentImage) || getDescription(currentImage)) && (
+                <div className="mb-3">
+                  {getTitle(currentImage) && (
+                    <h4 className="text-white font-bold text-sm sm:text-base mb-0.5">
+                      {getTitle(currentImage)}
+                    </h4>
+                  )}
+                  {getDescription(currentImage) && (
+                    <p className="text-white/70 text-xs sm:text-sm line-clamp-2">
+                      {getDescription(currentImage)}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Thumbnail strip */}
+              {images.length > 1 && (
+                <div
+                  ref={thumbsRef}
+                  className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
+                >
+                  {images.map((image, index) => (
+                    <button
+                      key={image.id}
+                      onClick={() => handleThumbnailClick(index)}
+                      className={`flex-shrink-0 rounded-lg overflow-hidden transition-all ${
+                        index === currentIndex
+                          ? 'ring-2 ring-[#F5569B] scale-110'
+                          : 'opacity-50 hover:opacity-100'
+                      }`}
+                      style={{ width: 'clamp(56px, 12vw, 80px)', height: 'clamp(56px, 12vw, 80px)' }}
+                    >
+                      {isVideo(image) ? (
+                        <video
+                          src={image.image_url}
+                          className="w-full h-full object-cover"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                      ) : (
+                        <img
+                          src={image.image_url}
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
