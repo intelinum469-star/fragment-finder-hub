@@ -209,31 +209,30 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
             {/* Main Media */}
             <div className="flex-1 flex items-center justify-center px-2 sm:px-6 pt-16 pb-36 sm:pb-40">
               {isVideo(currentImage) ? (
-                <div className="relative w-full h-full flex items-center justify-center">
+                <div className="relative w-full h-full flex items-center justify-center" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                   <video
                     key={currentImage.id}
                     src={currentImage.image_url}
                     controls
                     autoPlay
                     playsInline
-                    className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg"
-                    style={{ maxHeight: 'calc(100vh - 220px)' }}
+                    className="w-full h-full max-w-full max-h-full object-contain rounded-lg"
                   >
                     Your browser does not support the video tag.
                   </video>
                 </div>
               ) : (
                 <div
-                  className={`relative transition-transform duration-300 ${
+                  className={`relative w-full h-full flex items-center justify-center transition-transform duration-300 ${
                     isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
                   }`}
                   onClick={() => setIsZoomed(!isZoomed)}
+                  style={{ maxHeight: 'calc(100vh - 220px)' }}
                 >
                   <img
                     src={currentImage.image_url}
                     alt={getTitle(currentImage) || categoryName}
-                    className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg"
-                    style={{ maxHeight: 'calc(100vh - 220px)' }}
+                    className="w-full h-full max-w-full max-h-full object-contain rounded-lg"
                   />
                   {!isZoomed && (
                     <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full p-2">
