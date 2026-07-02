@@ -1,0 +1,2 @@
+ALTER TABLE public.portfolio_categories ADD COLUMN IF NOT EXISTS is_visible boolean NOT NULL DEFAULT true;
+UPDATE public.portfolio_categories SET is_visible = false WHERE id IN ('d19c2bcc-36ae-44d2-acf4-ab1f57334507','f93a1900-ef4d-4eda-844e-a24d2fca68d0','cc2e9353-26f7-4179-a3f8-3146ccf4aaa3','90ea63f0-3ff5-450f-ad37-a8025ac1f68d','315890a8-f44a-4e17-8f58-8887528acad5');

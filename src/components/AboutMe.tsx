@@ -16,6 +16,7 @@ interface Category {
   slug: string;
   main_image_url: string | null;
   order_index: number;
+  is_visible?: boolean;
 }
 
 interface PortfolioImage {
@@ -47,6 +48,7 @@ export const AboutMe: React.FC = () => {
       const { data, error } = await supabase
         .from('portfolio_categories')
         .select('*')
+        .eq('is_visible', true)
         .order('order_index', { ascending: true });
       
       if (error) throw error;
