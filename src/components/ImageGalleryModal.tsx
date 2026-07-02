@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, Grid3X3, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, ZoomIn, Grid3X3, Maximize2, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -37,8 +37,21 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const thumbsRef = useRef<HTMLDivElement>(null);
+  const gridItemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const currentImage = images[currentIndex];
+
+  // Scroll grid to the current image when entering grid view
+  useEffect(() => {
+    if (viewMode === 'grid') {
+      const el = gridItemRefs.current[currentIndex];
+      if (el) {
+        requestAnimationFrame(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        });
+      }
+    }
+  }, [viewMode, currentIndex]);
 
   // Reset state when opening
   useEffect(() => {
@@ -146,12 +159,12 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
               <button
                 onClick={() => setViewMode(viewMode === 'grid' ? 'single' : 'grid')}
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
-                title={viewMode === 'grid' ? 'Single view' : 'All works'}
+                title={viewMode === 'grid' ? 'Single view' : 'Back to grid'}
               >
                 {viewMode === 'grid' ? (
                   <Maximize2 className="w-5 h-5 text-white" />
                 ) : (
-                  <Grid3X3 className="w-5 h-5 text-white" />
+                  <ArrowLeft className="w-5 h-5 text-white" />
                 )}
               </button>
             )}
@@ -172,6 +185,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
               {images.map((image, index) => (
                 <button
                   key={image.id}
+                  ref={(el) => { gridItemRefs.current[index] = el; }}
                   onClick={() => handleGridItemClick(index)}
                   className="relative aspect-square rounded-xl overflow-hidden bg-neutral-900 hover:ring-2 hover:ring-[#F5569B] transition-all group"
                 >
