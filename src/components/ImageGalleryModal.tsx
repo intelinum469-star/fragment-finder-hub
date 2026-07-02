@@ -37,8 +37,21 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const thumbsRef = useRef<HTMLDivElement>(null);
+  const gridItemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const currentImage = images[currentIndex];
+
+  // Scroll grid to the current image when entering grid view
+  useEffect(() => {
+    if (viewMode === 'grid') {
+      const el = gridItemRefs.current[currentIndex];
+      if (el) {
+        requestAnimationFrame(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        });
+      }
+    }
+  }, [viewMode, currentIndex]);
 
   // Reset state when opening
   useEffect(() => {
