@@ -8,10 +8,16 @@ import { WhyMe } from "@/components/WhyMe";
 import { Process } from "@/components/Process";
 import { Contacts } from "@/components/Contacts";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-[#EFFEED] relative overflow-x-hidden">
+      <Seo
+        title="Natalia Egorova — Artist & Painter Portfolio"
+        description="Professional painter and seamstress with 30+ years experience. Custom portraits, murals, clothing and art decoration."
+        path="/"
+      />
       <PaintSplashes />
       <div className="relative z-10">
         <Header />
