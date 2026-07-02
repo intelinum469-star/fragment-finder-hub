@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          is_visible: boolean
           main_image_url: string | null
           name_en: string
           name_ru: string
@@ -28,6 +29,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
+          is_visible?: boolean
           main_image_url?: string | null
           name_en: string
           name_ru: string
@@ -38,6 +40,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
+          is_visible?: boolean
           main_image_url?: string | null
           name_en?: string
           name_ru?: string
