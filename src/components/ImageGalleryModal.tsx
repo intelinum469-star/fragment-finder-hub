@@ -185,6 +185,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
               {images.map((image, index) => (
                 <button
                   key={image.id}
+                  ref={(el) => { gridItemRefs.current[index] = el; }}
                   onClick={() => handleGridItemClick(index)}
                   className="relative aspect-square rounded-xl overflow-hidden bg-neutral-900 hover:ring-2 hover:ring-[#F5569B] transition-all group"
                 >
