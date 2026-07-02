@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus, Upload, Loader2, X, GripVertical } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Loader2, X, GripVertical, Eye, EyeOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -18,6 +18,7 @@ interface Category {
   slug: string;
   main_image_url: string | null;
   order_index: number;
+  is_visible?: boolean;
 }
 
 export const CategoriesManager = () => {
