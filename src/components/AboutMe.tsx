@@ -146,7 +146,7 @@ export const AboutMe: React.FC = () => {
               {/* Desktop: individual cards */}
               <div className="hidden sm:grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
                 {statsCards.map((stat, index) => (
-                  <div key={index} className="p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1 w-full aspect-square flex flex-col items-center justify-center text-center">
+                  <div key={index} className="p-6 rounded-3xl shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1 w-full aspect-square flex flex-col items-center justify-center text-center min-h-0">
                     <AnimatedIcon delay={index * 0.1}>
                       <stat.icon className="w-10 h-10 mb-3" style={{ color: stat.color }} />
                     </AnimatedIcon>
