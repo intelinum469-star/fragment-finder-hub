@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Session } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { Seo } from '@/components/Seo';
 
 const authSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }).max(255),
@@ -133,6 +134,12 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-[#EFFEED] flex items-center justify-center px-4">
+      <Seo
+        title="Login — Natalia Egorova"
+        description="Sign in to manage the Natalia Egorova artist portfolio."
+        path="/auth"
+        noindex
+      />
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border-4 border-[#F5569B]">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-black text-black mb-2">
