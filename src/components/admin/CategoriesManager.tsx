@@ -25,6 +25,7 @@ export const CategoriesManager = () => {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [items, setItems] = useState<Category[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -113,26 +114,33 @@ export const CategoriesManager = () => {
   });
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 8 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
+  const persistOrder = (ordered: Category[]) => {
+    setItems(ordered);
+    reorderMutation.mutate(ordered.map((cat, index) => ({ id: cat.id, order_index: index })));
+  };
+
+  const moveCategory = (id: string, direction: -1 | 1) => {
+    const oldIndex = items.findIndex((cat) => cat.id === id);
+    const newIndex = oldIndex + direction;
+    if (oldIndex === -1 || newIndex < 0 || newIndex >= items.length) return;
+    persistOrder(arrayMove(items, oldIndex, newIndex));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id && categories) {
-      const oldIndex = categories.findIndex((cat) => cat.id === active.id);
-      const newIndex = categories.findIndex((cat) => cat.id === over.id);
-
-      const reorderedCategories = arrayMove(categories, oldIndex, newIndex);
-      const updates = reorderedCategories.map((cat, index) => ({
-        id: cat.id,
-        order_index: index,
-      }));
-
-      reorderMutation.mutate(updates);
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex((cat) => cat.id === active.id);
+      const newIndex = items.findIndex((cat) => cat.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+      persistOrder(arrayMove(items, oldIndex, newIndex));
     }
   };
 
