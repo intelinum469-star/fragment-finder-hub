@@ -42,6 +42,10 @@ export const CategoriesManager = () => {
     },
   });
 
+  useEffect(() => {
+    if (categories) setItems(categories);
+  }, [categories]);
+
   const createMutation = useMutation({
     mutationFn: async (category: Omit<Category, 'id'>) => {
       const { error } = await supabase
@@ -240,15 +244,18 @@ export const CategoriesManager = () => {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={categories?.map(c => c.id) || []}
-            strategy={verticalListSortingStrategy}
+            items={items.map((c) => c.id)}
+            strategy={rectSortingStrategy}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories?.map((category) => (
+              {items.map((category, index) => (
                 <SortableCategoryItem
                   key={category.id}
                   category={category}
                   uploading={uploading}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < items.length - 1}
+                  onMove={moveCategory}
                   onImageUpload={handleImageUpload}
                   onEdit={openDialog}
                   onToggleVisibility={(id, is_visible) =>
