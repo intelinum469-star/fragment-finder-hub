@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus, Upload, Loader2, X, GripVertical, Eye, EyeOff } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, Loader2, X, GripVertical, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface Category {
@@ -25,6 +25,7 @@ export const CategoriesManager = () => {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [items, setItems] = useState<Category[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -40,6 +41,10 @@ export const CategoriesManager = () => {
       return data as Category[];
     },
   });
+
+  useEffect(() => {
+    if (categories) setItems(categories);
+  }, [categories]);
 
   const createMutation = useMutation({
     mutationFn: async (category: Omit<Category, 'id'>) => {
@@ -113,26 +118,33 @@ export const CategoriesManager = () => {
   });
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 8 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
+  const persistOrder = (ordered: Category[]) => {
+    setItems(ordered);
+    reorderMutation.mutate(ordered.map((cat, index) => ({ id: cat.id, order_index: index })));
+  };
+
+  const moveCategory = (id: string, direction: -1 | 1) => {
+    const oldIndex = items.findIndex((cat) => cat.id === id);
+    const newIndex = oldIndex + direction;
+    if (oldIndex === -1 || newIndex < 0 || newIndex >= items.length) return;
+    persistOrder(arrayMove(items, oldIndex, newIndex));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id && categories) {
-      const oldIndex = categories.findIndex((cat) => cat.id === active.id);
-      const newIndex = categories.findIndex((cat) => cat.id === over.id);
-
-      const reorderedCategories = arrayMove(categories, oldIndex, newIndex);
-      const updates = reorderedCategories.map((cat, index) => ({
-        id: cat.id,
-        order_index: index,
-      }));
-
-      reorderMutation.mutate(updates);
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex((cat) => cat.id === active.id);
+      const newIndex = items.findIndex((cat) => cat.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+      persistOrder(arrayMove(items, oldIndex, newIndex));
     }
   };
 
@@ -232,15 +244,18 @@ export const CategoriesManager = () => {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={categories?.map(c => c.id) || []}
-            strategy={verticalListSortingStrategy}
+            items={items.map((c) => c.id)}
+            strategy={rectSortingStrategy}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories?.map((category) => (
+              {items.map((category, index) => (
                 <SortableCategoryItem
                   key={category.id}
                   category={category}
                   uploading={uploading}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < items.length - 1}
+                  onMove={moveCategory}
                   onImageUpload={handleImageUpload}
                   onEdit={openDialog}
                   onToggleVisibility={(id, is_visible) =>
@@ -362,13 +377,16 @@ export const CategoriesManager = () => {
 interface SortableCategoryItemProps {
   category: Category;
   uploading: boolean;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  onMove: (id: string, direction: -1 | 1) => void;
   onImageUpload: (file: File, categoryId?: string) => void;
   onEdit: (category: Category) => void;
   onToggleVisibility: (id: string, is_visible: boolean) => void;
   onDelete: (id: string) => void;
 }
 
-const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onToggleVisibility, onDelete }: SortableCategoryItemProps) => {
+const SortableCategoryItem = ({ category, uploading, canMoveUp, canMoveDown, onMove, onImageUpload, onEdit, onToggleVisibility, onDelete }: SortableCategoryItemProps) => {
   const {
     attributes,
     listeners,
@@ -444,6 +462,29 @@ const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onTo
       )}
       
       <div className="p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!canMoveUp}
+            onClick={() => onMove(category.id, -1)}
+            title="Переместить назад"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <span className="text-xs text-gray-500 flex-1 text-center">Порядок</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!canMoveDown}
+            onClick={() => onMove(category.id, 1)}
+            title="Переместить вперёд"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-bold text-lg">{category.name_ru}</h3>
           {category.is_visible === false && (
