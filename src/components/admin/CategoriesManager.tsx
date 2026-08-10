@@ -377,13 +377,16 @@ export const CategoriesManager = () => {
 interface SortableCategoryItemProps {
   category: Category;
   uploading: boolean;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  onMove: (id: string, direction: -1 | 1) => void;
   onImageUpload: (file: File, categoryId?: string) => void;
   onEdit: (category: Category) => void;
   onToggleVisibility: (id: string, is_visible: boolean) => void;
   onDelete: (id: string) => void;
 }
 
-const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onToggleVisibility, onDelete }: SortableCategoryItemProps) => {
+const SortableCategoryItem = ({ category, uploading, canMoveUp, canMoveDown, onMove, onImageUpload, onEdit, onToggleVisibility, onDelete }: SortableCategoryItemProps) => {
   const {
     attributes,
     listeners,
@@ -459,6 +462,29 @@ const SortableCategoryItem = ({ category, uploading, onImageUpload, onEdit, onTo
       )}
       
       <div className="p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!canMoveUp}
+            onClick={() => onMove(category.id, -1)}
+            title="Переместить назад"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <span className="text-xs text-gray-500 flex-1 text-center">Порядок</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!canMoveDown}
+            onClick={() => onMove(category.id, 1)}
+            title="Переместить вперёд"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-bold text-lg">{category.name_ru}</h3>
           {category.is_visible === false && (
